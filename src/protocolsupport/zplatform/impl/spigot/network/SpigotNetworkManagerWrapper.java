@@ -3,8 +3,6 @@ package protocolsupport.zplatform.impl.spigot.network;
 import java.net.InetSocketAddress;
 import java.util.Arrays;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.bukkit.entity.Player;
 
 import com.mojang.authlib.properties.Property;
@@ -103,22 +101,22 @@ public class SpigotNetworkManagerWrapper extends NetworkManagerWrapper {
 		if (internal.spoofedProfile == null) {
 			return null;
 		}
-		return
-			Arrays.asList(internal.spoofedProfile)
-			.stream()
-			.map(prop -> new ProfileProperty(prop.getName(), prop.getValue(), prop.getSignature()))
-			.collect(Collectors.toList())
-			.toArray(new ProfileProperty[0]);
+		ProfileProperty[] properties = new ProfileProperty[internal.spoofedProfile.length];
+		for(int i = 0; i < properties.length; i++) {
+			Property prop = internal.spoofedProfile[i];
+			properties[i] = new ProfileProperty(prop.getName(), prop.getValue(), prop.getSignature());
+		}
+		return properties;
 	}
 
 	@Override
 	public void setSpoofedProfile(UUID uuid, ProfileProperty[] properties) {
 		internal.spoofedUUID = uuid;
-		if (properties != null) {
-			internal.spoofedProfile = Arrays.stream(properties)
-			.map(prop -> new Property(prop.getName(), prop.getValue(), prop.getSignature()))
-			.collect(Collectors.toList())
-			.toArray(new Property[0]);
+		if(properties == null) return;
+		internal.spoofedProfile = new Property[properties.length];
+		for(int i = 0; i < properties.length; i++) {
+			ProfileProperty prop = properties[i];
+			internal.spoofedProfile[i] = new Property(prop.getName(), prop.getValue(), prop.getSignature());
 		}
 	}
 

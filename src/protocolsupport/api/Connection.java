@@ -147,7 +147,6 @@ public abstract class Connection {
 		return metadata.containsKey(key);
 	}
 
-	@FunctionalInterface
 	public static interface PacketSendListener {
 		/**
 		 * Override to handle packet sending
@@ -158,7 +157,6 @@ public abstract class Connection {
 		public boolean onPacketSending(Object packet);
 	}
 
-	@FunctionalInterface
 	public static interface PacketReceiveListener {
 		/**
 		 * Override to handle packet receiving

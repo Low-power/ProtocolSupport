@@ -31,13 +31,15 @@ public class SpigotConnectionImpl extends ConnectionImpl {
 	public void sendPacket(Object packet) {
 		@SuppressWarnings("unchecked")
 		final Packet<PacketListener> packetInst = (Packet<PacketListener>) packet;
-		Runnable packetSend = () -> {
-			try {
-				ChannelHandlerContext encoderContext = networkmanager.getChannel().pipeline().context(SpigotChannelHandlers.ENCODER);
-				ChannelOutboundHandler encoderChannelHandler = (ChannelOutboundHandler) encoderContext.handler();
-				encoderChannelHandler.write(encoderContext, packetInst, encoderContext.voidPromise());
-			} catch (Exception e) {
-				e.printStackTrace();
+		Runnable packetSend = new Runnable() {
+			public void run() {
+				try {
+					ChannelHandlerContext encoderContext = networkmanager.getChannel().pipeline().context(SpigotChannelHandlers.ENCODER);
+					ChannelOutboundHandler encoderChannelHandler = (ChannelOutboundHandler) encoderContext.handler();
+					encoderChannelHandler.write(encoderContext, packetInst, encoderContext.voidPromise());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		};
 		if (networkmanager.getChannel().eventLoop().inEventLoop()) {

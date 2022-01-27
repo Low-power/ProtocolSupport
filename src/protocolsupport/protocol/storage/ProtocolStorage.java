@@ -6,8 +6,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
-
+import java.util.ArrayList;
 import protocolsupport.protocol.ConnectionImpl;
 
 //TODO: guard with single rw lock because otherwise after moving handshake processing to separate executor race conditions may occur
@@ -41,12 +40,15 @@ public class ProtocolStorage {
 	}
 
 	public static Collection<ConnectionImpl> getConnections() {
-		return primaryStorage.values().stream().map(data -> data.connection).collect(Collectors.toList());
+		Collection<Data> data_collection = primaryStorage.values();
+		ArrayList<ConnectionImpl> connections = new ArrayList<>(data_collection.size());
+		for(Data data : data_collection) connections.add(data.connection);
+		return connections;
 	}
 
 	private static class Data {
 		private final ConnectionImpl connection;
-		private final Set<SocketAddress> addresses = Collections.newSetFromMap(new ConcurrentHashMap<>());
+		private final Set<SocketAddress> addresses = Collections.newSetFromMap(new ConcurrentHashMap<SocketAddress, Boolean>());
 		public Data(ConnectionImpl connection) {
 			this.connection = connection;
 		}

@@ -41,7 +41,7 @@ public abstract class AbstractHandshakeListener {
 					final InetAddress address = networkManager.getAddress().getAddress();
 					if (ThrottleTracker.isEnabled() && !ServerPlatform.get().getMiscUtils().isBungeeEnabled()) {
 						if (ThrottleTracker.throttle(address)) {
-							String message = "Connection throttled! Please wait before reconnecting.";
+							final String message = "Connection throttled! Please wait before reconnecting.";
 							networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createLoginDisconnectPacket(message), new GenericFutureListener<Future<? super Void>>() {
 								@Override
 								public void operationComplete(Future<? super Void> arg0)  {
@@ -57,7 +57,7 @@ public abstract class AbstractHandshakeListener {
 				//check client version (may be not latest if connection was from snapshot)
 				ProtocolVersion clientversion = ProtocolVersion.fromId(clientVersion);
 				if (clientversion != ProtocolVersion.getLatest(ProtocolType.PC)) {
-					String message = MessageFormat.format(ServerPlatform.get().getMiscUtils().getOutdatedServerMessage().replace("'", "''"), ServerPlatform.get().getMiscUtils().getVersionName());
+					final String message = MessageFormat.format(ServerPlatform.get().getMiscUtils().getOutdatedServerMessage().replace("'", "''"), ServerPlatform.get().getMiscUtils().getVersionName());
 					this.networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createLoginDisconnectPacket(message), new GenericFutureListener<Future<? super Void>>() {
 						@Override
 						public void operationComplete(Future<? super Void> arg0)  {
@@ -71,7 +71,7 @@ public abstract class AbstractHandshakeListener {
 				if (ServerPlatform.get().getMiscUtils().isBungeeEnabled()) {
 					final String[] split = hostname.split("\u0000");
 					if ((split.length != 3) && (split.length != 4)) {
-						String message = "If you wish to use IP forwarding, please enable it in your BungeeCord config as well!";
+						final String message = "If you wish to use port forwarding, please enable it in your BungeeCord config as well!";
 						networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createLoginDisconnectPacket(message), new GenericFutureListener<Future<? super Void>>() {
 							@Override
 							public void operationComplete(Future<? super Void> arg0)  {

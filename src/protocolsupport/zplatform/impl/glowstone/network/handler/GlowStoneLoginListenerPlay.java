@@ -34,7 +34,7 @@ public class GlowStoneLoginListenerPlay extends AbstractLoginListenerPlay implem
 	@Override
 	protected JoinData createJoinData() {
 		PlayerProfile glowstoneProfile = GlowStoneMiscUtils.toGlowStoneGameProfile(profile);
-		PlayerReader reader = server.getPlayerDataService().beginReadingData(glowstoneProfile.getUniqueId());
+		final PlayerReader reader = server.getPlayerDataService().beginReadingData(glowstoneProfile.getUniqueId());
 		GlowPlayer player = new GlowPlayer(((GlowStoneNetworkManagerWrapper) networkManager).getSession(), glowstoneProfile, reader);
 		return new JoinData(player, player, reader) {
 			@Override

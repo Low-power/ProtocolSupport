@@ -3,9 +3,7 @@ package protocolsupport.protocol.utils.datawatcher;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
 import protocolsupport.api.ProtocolVersion;
-import protocolsupportbuildprocessor.annotations.NeedsNoArgConstructor;
 
-@NeedsNoArgConstructor
 public abstract class DataWatcherObject<T> {
 
 	protected T value;

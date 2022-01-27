@@ -2,8 +2,12 @@ package protocolsupport.api;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumMap;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+import java.util.Iterator;
 import org.apache.commons.lang3.Validate;
 
 import gnu.trove.map.hash.TIntObjectHashMap;
@@ -130,9 +134,10 @@ public enum ProtocolVersion {
 
 	private static final TIntObjectHashMap<ProtocolVersion> byProtocolId = new TIntObjectHashMap<>();
 	static {
-		Arrays.stream(ProtocolVersion.values())
-		.filter(ProtocolVersion::isSupported)
-		.forEach(version -> byProtocolId.put(version.id, version));
+		for(ProtocolVersion version : ProtocolVersion.values()) {
+			if(!version.isSupported()) continue;
+			byProtocolId.put(version.id, version);
+		}
 	}
 
 	/**
@@ -151,12 +156,18 @@ public enum ProtocolVersion {
 	static {
 		for (ProtocolType type : ProtocolType.values()) {
 			if (type != ProtocolType.UNKNOWN) {
-				byOrderId.put(type,
-					Arrays.stream(ProtocolVersion.values())
-					.filter(version -> version.getProtocolType() == type)
-					.sorted((o1, o2) -> o1.orderId.compareTo(o2.orderId))
-					.toArray(size -> new ProtocolVersion[size])
-				);
+				List<ProtocolVersion> sorted_versions = new ArrayList<>(Arrays.asList(ProtocolVersion.values()));
+				Iterator<ProtocolVersion> iterator = sorted_versions.iterator();
+				while(iterator.hasNext()) {
+					ProtocolVersion version = iterator.next();
+					if(version.getProtocolType() != type) iterator.remove();
+				}
+				Collections.sort(sorted_versions, new Comparator<ProtocolVersion>() {
+						public int compare(ProtocolVersion v1, ProtocolVersion v2) {
+							return v1.orderId.compareTo(v2.orderId);
+						}
+					});
+				byOrderId.put(type, sorted_versions.toArray(new ProtocolVersion[0]));
 			}
 		}
 	}

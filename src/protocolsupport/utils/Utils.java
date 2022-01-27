@@ -75,26 +75,31 @@ public class Utils {
 	}
 
 	public static <T> T getJavaPropertyValue(String property, T defaultValue, Converter<String, T> converter) {
-		return getRawJavaPropertyValue("protocolsupport."+property, defaultValue, converter);
+		return getRawJavaPropertyValue("protocolsupport." + property, defaultValue, converter);
+	}
+
+	public static <T> T getJavaPropertyValue(String property, T defaultValue) {
+		return getRawJavaPropertyValue("protocolsupport." + property, defaultValue, null);
 	}
 
 	public static <T> T getRawJavaPropertyValue(String property, T defaultValue, Converter<String, T> converter) {
 		try {
 			String value = System.getProperty(property);
 			if (value != null) {
-				return converter.convert(value);
+				if(converter != null) return converter.convert(value);
+				if(defaultValue instanceof String) return (T)value;
+				if(defaultValue instanceof Boolean) return (T)Boolean.valueOf(value);
+				if(defaultValue instanceof Byte) return (T)Byte.valueOf(value);
+				if(defaultValue instanceof Short) return (T)Short.valueOf(value);
+				if(defaultValue instanceof Integer) return (T)Integer.valueOf(value);
+				if(defaultValue instanceof Long) return (T)Long.valueOf(value);
 			}
-		} catch (Throwable t) {
+		} catch(Exception e) {
 		}
 		return defaultValue;
 	}
 
-	@FunctionalInterface
 	public static interface Converter<T, R> {
-		public static final Converter<String, Integer> STRING_TO_INT = Integer::parseInt;
-		public static final Converter<String, Long> STRING_TO_LONG = Long::parseLong;
-		public static final Converter<String, Boolean> STRING_TO_BOOLEAN = Boolean::parseBoolean;
-		public static final Converter<String, String> NONE = t -> t;
 		public R convert(T t);
 	}
 

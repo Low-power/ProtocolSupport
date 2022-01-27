@@ -2,7 +2,7 @@ package protocolsupport.zplatform.impl.glowstone.itemstack;
 
 import java.util.Collections;
 import java.util.Objects;
-
+import java.util.List;
 import net.glowstone.util.nbt.ByteTag;
 import net.glowstone.util.nbt.CompoundTag;
 import net.glowstone.util.nbt.IntTag;
@@ -21,7 +21,8 @@ public class GlowStoneNBTTagListWrapper extends NBTTagListWrapper {
 	}
 
 	public static GlowStoneNBTTagListWrapper create() {
-		return new GlowStoneNBTTagListWrapper(new ListTag<>(null, Collections.emptyList()));
+		List<Tag<?>> empty_list = Collections.emptyList();
+		return new GlowStoneNBTTagListWrapper(new ListTag<Tag<?>>(null, empty_list));
 	}
 
 	@Override

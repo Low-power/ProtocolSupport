@@ -19,8 +19,9 @@ public enum TileEntityUpdateType {
 		updateTypes.put("minecraft:sign", TileEntityUpdateType.SIGN);
 	}
 
-	public static TileEntityUpdateType fromType(String type) {
-		return updateTypes.getOrDefault(type, TileEntityUpdateType.UNKNOWN);
+	public static TileEntityUpdateType fromType(String type_name) {
+		TileEntityUpdateType type = updateTypes.get(type_name);
+		return type == null ? TileEntityUpdateType.UNKNOWN : type;
 	}
 
 	public int getId() {

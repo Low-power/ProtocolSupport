@@ -18,7 +18,13 @@ public class TabComplete extends MiddleTabComplete {
 			return RecyclableEmptyList.get();
 		}
 		ClientBoundPacketData serializer = ClientBoundPacketData.create(ClientBoundPacket.PLAY_TAB_COMPLETE_ID, version);
-		StringSerializer.writeString(serializer, version, Utils.clampString(String.join("\u0000", matches), Short.MAX_VALUE));
+		StringBuilder s = new StringBuilder();
+		for(int i = 0; i < matches.length && s.length() < Short.MAX_VALUE; i++) {
+			if(i > 0) s.append("\u0000");
+			s.append(matches[i]);
+		}
+		if(s.length() > Short.MAX_VALUE) s.setLength(Short.MAX_VALUE);
+		StringSerializer.writeString(serializer, version, s.toString());
 		return RecyclableSingletonList.create(serializer);
 	}
 

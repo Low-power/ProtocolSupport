@@ -723,7 +723,8 @@ public enum SpecificRemapper {
 	}
 
 	public static SpecificRemapper fromWatchedType(WatchedType type) {
-		return wtype.getOrDefault(type, SpecificRemapper.NONE);
+		SpecificRemapper remapper = wtype.get(type);
+		return remapper == null ? SpecificRemapper.NONE : remapper;
 	}
 
 	private final WatchedType type;

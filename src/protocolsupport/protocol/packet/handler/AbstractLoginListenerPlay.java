@@ -1,10 +1,9 @@
 package protocolsupport.protocol.packet.handler;
 
+import java.util.UUID;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.util.stream.Collectors;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -81,13 +80,15 @@ public abstract class AbstractLoginListenerPlay implements IHasProfile {
 	}
 
 	private void tryJoin() {
-		//find players with same uuid
-		List<Player> toKick = Bukkit.getOnlinePlayers().stream().filter(player -> player.getUniqueId().equals(profile.getUUID())).collect(Collectors.toList());
-		//kick them
-		if (!toKick.isEmpty()) {
-			toKick.forEach(player -> player.kickPlayer("You logged in from another location"));
-			return;
+		// find players with same uuid and kick them
+		boolean kicked = false;
+		UUID uuid = profile.getUUID();
+		for(Player player : Bukkit.getOnlinePlayers()) {
+			if(!player.getUniqueId().equals(uuid)) continue;
+			player.kickPlayer("You logged in from another location");
+			kicked = true;
 		}
+		if(kicked) return;
 
 		//no longer attempt to join
 		ready = false;
@@ -142,7 +143,9 @@ public abstract class AbstractLoginListenerPlay implements IHasProfile {
 				// first send join game that will make client actually switch to game state
 				networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createFakeJoinGamePacket());
 				// send disconnect with a little delay
-				networkManager.getChannel().eventLoop().schedule(() -> disconnect0(s), 50, TimeUnit.MILLISECONDS);
+				networkManager.getChannel().eventLoop().schedule(new Runnable() {
+						public void run() { disconnect0(s); }
+					}, 50, TimeUnit.MILLISECONDS);
 			} else {
 				disconnect0(s);
 			}
@@ -152,7 +155,7 @@ public abstract class AbstractLoginListenerPlay implements IHasProfile {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected void disconnect0(String s) {
+	protected void disconnect0(final String s) {
 		networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createPlayDisconnectPacket(s), new GenericFutureListener<Future<? super Void>>() {
 			@Override
 			public void operationComplete(Future<? super Void> future) {

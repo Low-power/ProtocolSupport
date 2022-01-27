@@ -96,13 +96,13 @@ public class PingResponse {
 			JsonObject jsonObject = JsonUtils.getAsJsonObject(jsonElement, "status");
 			PingResponse ping = new PingResponse();
 			if (jsonObject.has("version")) {
-				ping.setProtocolData(ctx.deserialize(jsonObject.get("version"), PingResponseProtocolData.class));
+				ping.setProtocolData((PingResponseProtocolData)ctx.deserialize(jsonObject.get("version"), PingResponseProtocolData.class));
 			}
 			if (jsonObject.has("description")) {
-				ping.setMotd(ctx.deserialize(jsonObject.get("description"), BaseComponent.class));
+				ping.setMotd((BaseComponent)ctx.deserialize(jsonObject.get("description"), BaseComponent.class));
 			}
 			if (jsonObject.has("players")) {
-				ping.setPlayers(ctx.deserialize(jsonObject.get("players"), PingResponsePlayers.class));
+				ping.setPlayers((PingResponsePlayers)ctx.deserialize(jsonObject.get("players"), PingResponsePlayers.class));
 			}
 			if (jsonObject.has("favicon")) {
 				ping.setIcon(JsonUtils.getString(jsonObject, "favicon"));

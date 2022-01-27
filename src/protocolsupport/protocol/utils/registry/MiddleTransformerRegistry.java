@@ -51,7 +51,6 @@ public class MiddleTransformerRegistry<T> {
 		return (protocol.ordinal() << 8) | packetId;
 	}
 
-	@FunctionalInterface
 	public static interface InitCallBack<T> {
 		public void onInit(T object);
 	}

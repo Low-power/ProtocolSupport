@@ -128,7 +128,9 @@ public class ItemStackRemapper {
 			new TIntObjectMapDecorator<EnumMap<ProtocolVersion, List<ItemStackSpecificRemapper>>>(clientbound_remapper_registry),
 			material.getId(), new EnumMap<ProtocolVersion, List<ItemStackSpecificRemapper>>(ProtocolVersion.class)
 		);
-		Arrays.stream(versions).forEach(version -> Utils.getOrCreateDefault(map, version, new ArrayList<ItemStackSpecificRemapper>()).add(transformer));
+		for(ProtocolVersion version : versions) {
+			Utils.getOrCreateDefault(map, version, new ArrayList<ItemStackSpecificRemapper>()).add(transformer);
+		}
 	}
 
 	//Order is important because some transformers may add tags in new format
@@ -143,7 +145,9 @@ public class ItemStackRemapper {
 		registerClientboundRemapper(Material.WRITTEN_BOOK, new BookPagesToLegacyTextSpecificRemapper(), ProtocolVersionsHelper.BEFORE_1_8);
 		registerClientboundRemapper(Material.BOOK_AND_QUILL, new EmptyBookPageAdderSpecificRemapper(), ProtocolVersionsHelper.ALL);
 		EnchantFilterNBTSpecificRemapper enchantfilter = new EnchantFilterNBTSpecificRemapper();
-		Arrays.stream(Material.values()).forEach(material -> registerClientboundRemapper(material, enchantfilter, ProtocolVersionsHelper.ALL));
+		for(Material material : Material.values()) {
+			registerClientboundRemapper(material, enchantfilter, ProtocolVersionsHelper.ALL);
+		}
 	}
 
 	public static ItemStackWrapper remapClientbound(ProtocolVersion version, ItemStackWrapper itemstack) {

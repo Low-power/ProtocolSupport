@@ -30,10 +30,9 @@ public class RecyclableSingletonList<E> extends AbstractCollection<E> implements
 
 	protected E singleValue;
 
-	@Override
-	public void recycle() {
-		if (singleValue instanceof Recyclable) {
-			((Recyclable) singleValue).recycle();
+	public void close() throws Exception {
+		if (singleValue instanceof AutoCloseable) {
+			((AutoCloseable)singleValue).close();
 		}
 		recycleObjectOnly();
 	}
@@ -86,6 +85,10 @@ public class RecyclableSingletonList<E> extends AbstractCollection<E> implements
 
 		public void reset() {
 			hasNext = true;
+		}
+
+		public void remove() {
+			throw new UnsupportedOperationException();
 		}
 	}
 

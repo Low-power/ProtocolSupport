@@ -6,7 +6,7 @@ import java.net.InetSocketAddress;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Level;
-
+import java.util.concurrent.Callable;
 import org.bukkit.Bukkit;
 import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerPreLoginEvent;
@@ -74,16 +74,19 @@ public class PlayerLookupUUID {
 		AsyncPlayerPreLoginEvent asyncEvent = new AsyncPlayerPreLoginEvent(playerName, address, uniqueId);
 		Bukkit.getPluginManager().callEvent(asyncEvent);
 
-		PlayerPreLoginEvent syncEvent = new PlayerPreLoginEvent(playerName, address, uniqueId);
+		final PlayerPreLoginEvent syncEvent = new PlayerPreLoginEvent(playerName, address, uniqueId);
 		if (asyncEvent.getResult() != PlayerPreLoginEvent.Result.ALLOWED) {
 			syncEvent.disallow(asyncEvent.getResult(), asyncEvent.getKickMessage());
 		}
 
 		if (PlayerPreLoginEvent.getHandlerList().getRegisteredListeners().length != 0) {
-			if (ServerPlatform.get().getMiscUtils().callSyncTask(() -> {
-				Bukkit.getPluginManager().callEvent(syncEvent);
-				return syncEvent.getResult();
-			}).get() != PlayerPreLoginEvent.Result.ALLOWED) {
+			if (ServerPlatform.get().getMiscUtils().callSyncTask(new Callable<PlayerPreLoginEvent.Result>() {
+					public PlayerPreLoginEvent.Result call() throws Exception {
+						Bukkit.getPluginManager().callEvent(syncEvent);
+						return syncEvent.getResult();
+					}
+				}
+			).get() != PlayerPreLoginEvent.Result.ALLOWED) {
 				listener.disconnect(syncEvent.getKickMessage());
 				return;
 			}

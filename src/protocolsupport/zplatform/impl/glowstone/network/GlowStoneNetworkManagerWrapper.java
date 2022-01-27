@@ -4,10 +4,9 @@ import java.net.InetSocketAddress;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
-
 import org.bukkit.entity.Player;
 
 import com.flowpowered.network.Message;
@@ -66,7 +65,8 @@ public class GlowStoneNetworkManagerWrapper extends NetworkManagerWrapper {
 		if (old != null) {
 			getSession().setProxyData(new ProxyData(null, null, address, null, old.getProfile().getUniqueId(), old.getProfile().getProperties()));
 		} else {
-			getSession().setProxyData(new ProxyData(null, null, address, null, fakeUUID, Collections.emptyList()));
+			List<PlayerProperty> empty_list = Collections.emptyList();
+			getSession().setProxyData(new ProxyData(null, null, address, null, fakeUUID, empty_list));
 		}
 	}
 
@@ -130,11 +130,14 @@ public class GlowStoneNetworkManagerWrapper extends NetworkManagerWrapper {
 	@Override
 	public ProfileProperty[] getSpoofedProperties() {
 		PlayerProfile profile = getSpoofedProfile();
-		return profile == null ? null :
-		profile.getProperties().stream()
-		.map(property -> new ProfileProperty(property.getName(), property.getValue(), property.getSignature()))
-		.collect(Collectors.toList())
-		.toArray(new ProfileProperty[0]);
+		if(profile == null) return null;
+		List<PlayerProperty> glowstone_properties = profile.getProperties();
+		ProfileProperty[] properties = new ProfileProperty[glowstone_properties.size()];
+		for(int i = 0; i < properties.length; i++) {
+			PlayerProperty property = glowstone_properties.get(i);
+			properties[i] = new ProfileProperty(property.getName(), property.getValue(), property.getSignature());
+		}
+		return properties;
 	}
 
 	private PlayerProfile getSpoofedProfile() {
@@ -145,11 +148,14 @@ public class GlowStoneNetworkManagerWrapper extends NetworkManagerWrapper {
 	@Override
 	public void setSpoofedProfile(UUID uuid, ProfileProperty[] properties) {
 		ProxyData old = getSession().getProxyData();
-		List<PlayerProperty> glowproperties = Collections.emptyList();
-		if (properties != null) {
-			glowproperties = Arrays.stream(properties)
-			.map(prop -> new PlayerProperty(prop.getName(), prop.getValue(), prop.getSignature()))
-			.collect(Collectors.toList());
+		List<PlayerProperty> glowproperties;
+		if (properties == null) {
+			glowproperties = Collections.emptyList();
+		} else {
+			glowproperties = new ArrayList<>(properties.length);
+			for(ProfileProperty prop : properties) {
+				glowproperties.add(new PlayerProperty(prop.getName(), prop.getValue(), prop.getSignature()));
+			}
 		}
 		if (old != null) {
 			getSession().setProxyData(new ProxyData(null, null, old.getAddress(), null, uuid, glowproperties));

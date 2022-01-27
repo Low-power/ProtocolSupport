@@ -25,9 +25,11 @@ public abstract class AbstractPacketEncoder extends MessageToMessageEncoder<Byte
 	public AbstractPacketEncoder(Connection connection, NetworkDataCache storage) {
 		this.connection = connection;
 		this.cache = storage;
-		registry.setCallBack(object -> {
-			object.setConnection(AbstractPacketEncoder.this.connection);
-			object.setSharedStorage(AbstractPacketEncoder.this.cache);
+		registry.setCallBack(new MiddleTransformerRegistry.InitCallBack<ClientBoundMiddlePacket>() {
+			public void onInit(ClientBoundMiddlePacket packet) {
+				packet.setConnection(AbstractPacketEncoder.this.connection);
+				packet.setSharedStorage(AbstractPacketEncoder.this.cache);
+			}
 		});
 		varintPacketId = connection.getVersion().isAfterOrEq(ProtocolVersion.MINECRAFT_1_7_5);
 	}
@@ -59,6 +61,8 @@ public abstract class AbstractPacketEncoder extends MessageToMessageEncoder<Byte
 					senddata.writeBytes(packetdata);
 					output.add(senddata);
 				}
+			} catch(Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}

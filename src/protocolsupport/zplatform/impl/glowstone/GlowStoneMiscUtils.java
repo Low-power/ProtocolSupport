@@ -3,11 +3,13 @@ package protocolsupport.zplatform.impl.glowstone;
 import java.security.KeyPair;
 import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import java.util.stream.Collectors;
-
 import org.bukkit.Achievement;
 import org.bukkit.Bukkit;
 import org.bukkit.Statistic;
@@ -24,6 +26,7 @@ import net.glowstone.entity.meta.profile.PlayerProperty;
 import net.glowstone.io.nbt.NbtSerialization;
 import net.glowstone.net.protocol.ProtocolType;
 import net.glowstone.util.GlowServerIcon;
+import protocolsupport.api.events.PlayerPropertiesResolveEvent.ProfileProperty;
 import protocolsupport.protocol.pipeline.IPacketPrepender;
 import protocolsupport.protocol.pipeline.IPacketSplitter;
 import protocolsupport.protocol.utils.authlib.GameProfile;
@@ -36,20 +39,37 @@ import protocolsupport.zplatform.itemstack.NBTTagCompoundWrapper;
 import protocolsupport.zplatform.network.NetworkManagerWrapper;
 import protocolsupport.zplatform.network.NetworkState;
 
+@SuppressWarnings("unchecked")
 public class GlowStoneMiscUtils implements PlatformUtils {
+	static {
+		// Workaround for error: illegal forward reference
+		HashMap map = new HashMap();
+		for(Statistic stat_type : Statistic.values()) {
+			String name = GlowStatistic.getName(stat_type);
+			if(name == null) continue;
+			map.put(name, stat_type);
+		}
+		statByName = map;
+		map = new HashMap();
+		for(Achievement ach_type : Achievement.values()) {
+			String name = GlowAchievement.getName(ach_type);
+			if(name == null) continue;
+			map.put(name, ach_type);
+		}
+		achByName = map;
+	}
 
 	public static GlowServer getServer() {
 		return ((GlowServer) Bukkit.getServer());
 	}
 
 	public static PlayerProfile toGlowStoneGameProfile(GameProfile profile) {
-		return new PlayerProfile(
-			profile.getName(), profile.getUUID(),
-			profile.getProperties().values()
-			.stream()
-			.map(property -> new PlayerProperty(property.getName(), property.getValue(), property.getSignature()))
-			.collect(Collectors.toList())
-		);
+		Collection<ProfileProperty> properties = profile.getProperties().values();
+		List<PlayerProperty> glowstone_properties = new ArrayList<>(properties.size());
+		for(ProfileProperty prop : properties) {
+			glowstone_properties.add(new PlayerProperty(prop.getName(), prop.getValue(), prop.getSignature()));
+		}
+		return new PlayerProfile(profile.getName(), profile.getUUID(), glowstone_properties);
 	}
 
 	public static ProtocolType netStateToProtocol(NetworkState type) {
@@ -156,12 +176,8 @@ public class GlowStoneMiscUtils implements PlatformUtils {
 		return GlowServer.GAME_VERSION;
 	}
 
-	private static final Map<String, Statistic> statByName = Arrays.stream(Statistic.values())
-	.filter(stat -> GlowStatistic.getName(stat) != null)
-	.collect(Collectors.toMap(stat -> GlowStatistic.getName(stat), stat -> stat));
-	private static final Map<String, Achievement> achByName = Arrays.stream(Achievement.values())
-	.filter(ach -> GlowAchievement.getName(ach) != null)
-	.collect(Collectors.toMap(ach -> GlowAchievement.getName(ach), ach -> ach));
+	private static final Map<String, Statistic> statByName;
+	private static final Map<String, Achievement> achByName;
 
 	@Override
 	public Statistic getStatisticByName(String value) {

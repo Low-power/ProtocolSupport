@@ -17,8 +17,7 @@ public class RecyclableEmptyList<E> implements RecyclableCollection<E> {
 	private RecyclableEmptyList() {
 	}
 
-	@Override
-	public void recycle() {
+	public void close() {
 	}
 
 	@Override

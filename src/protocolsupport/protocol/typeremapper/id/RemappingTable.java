@@ -62,7 +62,8 @@ public class RemappingTable {
 		}
 
 		public T getRemap(T from) {
-			return table.getOrDefault(from, from);
+			T v = table.get(from);
+			return v == null ? from : v;
 		}
 
 	}

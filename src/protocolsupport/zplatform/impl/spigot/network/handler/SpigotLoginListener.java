@@ -57,7 +57,7 @@ public abstract class SpigotLoginListener extends AbstractLoginListener implemen
 	}
 
 	@Override
-	public void a(PacketLoginInEncryptionBegin packet) {
+	public void a(final PacketLoginInEncryptionBegin packet) {
 		handleEncryption(new EncryptionPacketWrapper() {
 			@Override
 			public SecretKey getSecretKey(PrivateKey key) {

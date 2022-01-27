@@ -2,9 +2,7 @@ package protocolsupport.protocol.packet.middle;
 
 import protocolsupport.api.Connection;
 import protocolsupport.protocol.storage.NetworkDataCache;
-import protocolsupportbuildprocessor.annotations.NeedsNoArgConstructor;
 
-@NeedsNoArgConstructor
 public abstract class MiddlePacket {
 
 	protected Connection connection;

@@ -14,7 +14,7 @@ public class Allocator {
 		ProtocolSupport.logInfo("Allocator: "+allocator + ", direct: "+direct);
 	}
 
-	private static final boolean direct = Utils.getJavaPropertyValue("buffer", true, new Converter<String, Boolean>() {
+	private static final boolean direct = Utils.getJavaPropertyValue("buffer", Boolean.valueOf(true), new Converter<String, Boolean>() {
 		@Override
 		public Boolean convert(String t) {
 			switch (t.toLowerCase()) {

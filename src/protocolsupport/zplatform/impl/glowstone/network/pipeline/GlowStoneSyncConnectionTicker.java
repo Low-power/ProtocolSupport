@@ -13,7 +13,7 @@ public class GlowStoneSyncConnectionTicker extends ChannelInboundHandlerAdapter 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		super.channelActive(ctx);
-		Channel channel = ctx.channel();
+		final Channel channel = ctx.channel();
 		new BukkitRunnable() {
 			@Override
 			public void run() {

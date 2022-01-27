@@ -5,7 +5,7 @@ import java.util.concurrent.CountDownLatch;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.entity.Player;
 import io.netty.channel.Channel;
 import net.glowstone.GlowServer;
 import net.glowstone.net.GameServer;
@@ -18,25 +18,31 @@ public class GlowStoneNettyInjector {
 	private static final CountDownLatch injectFinishedLatch = new CountDownLatch(1);
 
 	public static void inject() throws IllegalArgumentException, IllegalAccessException {
-		Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(ProtocolSupport.class), () -> {
-			try {
-				injectFinishedLatch.await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+		Bukkit.getScheduler().scheduleSyncDelayedTask(JavaPlugin.getPlugin(ProtocolSupport.class), new Runnable() {
+			public void run() {
+				try {
+					injectFinishedLatch.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		});
-		new Thread(() -> {
-			try {
-				GlowServer server = GlowStoneMiscUtils.getServer();
-				//TODO: PR some sort of channel created signal to GlowStone
-				GameServer gameserver = getWithWait(ReflectionUtils.getField(GlowServer.class, "networkServer"), server);
-				Channel channel = getWithWait(ReflectionUtils.getField(GameServer.class, "channel"), gameserver);
-				channel.pipeline().addFirst(new GlowStoneNettyServerChannelHandler());
-				Bukkit.getOnlinePlayers().forEach(player -> player.kickPlayer("Channel reset"));
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					GlowServer server = GlowStoneMiscUtils.getServer();
+					// TODO: PR some sort of channel created signal to GlowStone
+					GameServer gameserver = getWithWait(ReflectionUtils.getField(GlowServer.class, "networkServer"), server);
+					Channel channel = getWithWait(ReflectionUtils.getField(GameServer.class, "channel"), gameserver);
+					channel.pipeline().addFirst(new GlowStoneNettyServerChannelHandler());
+					for(Player player : Bukkit.getOnlinePlayers()) {
+						player.kickPlayer("Channel reset");
+					}
+				} catch (IllegalArgumentException | IllegalAccessException e) {
+					e.printStackTrace();
+				}
+				injectFinishedLatch.countDown();
 			}
-			injectFinishedLatch.countDown();
 		}).start();
 	}
 

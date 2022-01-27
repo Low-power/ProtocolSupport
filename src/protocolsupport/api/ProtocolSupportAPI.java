@@ -39,7 +39,7 @@ public class ProtocolSupportAPI {
 	 * @return all currently active connections
 	 */
 	public static List<Connection> getConnections() {
-		return new ArrayList<>(ProtocolStorage.getConnections());
+		return new ArrayList<Connection>(ProtocolStorage.getConnections());
 	}
 
 	/**

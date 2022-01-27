@@ -25,11 +25,10 @@ public class RecyclableArrayList<E> extends ArrayList<E> implements RecyclableCo
 		this.handle = handle;
 	}
 
-	@Override
-	public void recycle() {
+	public void close() throws Exception {
 		for (E element : this) {
-			if (element instanceof Recyclable) {
-				((Recyclable) element).recycle();
+			if (element instanceof AutoCloseable) {
+				((AutoCloseable)element).close();
 			}
 		}
 		recycleObjectOnly();

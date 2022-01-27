@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -12,8 +14,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 import org.bukkit.plugin.java.JavaPlugin;
 
 import protocolsupport.ProtocolSupport;
@@ -22,9 +22,9 @@ import protocolsupport.utils.Utils.Converter;
 
 public class AsyncErrorLogger {
 
-	private static final boolean enabled = Utils.getJavaPropertyValue("errlog.enabled", true, Converter.STRING_TO_BOOLEAN);
-	private static final long maxFileSize = Utils.getJavaPropertyValue("errlog.maxsize", 1024L * 1024L * 20L, Converter.STRING_TO_LONG);
-	private static final String filePath = Utils.getJavaPropertyValue("errlog.path", JavaPlugin.getPlugin(ProtocolSupport.class).getName()+"-errlog", Converter.NONE);
+	private static final boolean enabled = Utils.getJavaPropertyValue("errlog.enabled", Boolean.valueOf(true));
+	private static final long maxFileSize = Utils.getJavaPropertyValue("errlog.maxsize", Long.valueOf(1024L * 1024L * 20L));
+	private static final String filePath = Utils.getJavaPropertyValue("errlog.path", JavaPlugin.getPlugin(ProtocolSupport.class).getName()+"-errlog");
 
 	public static final AsyncErrorLogger INSTANCE = new AsyncErrorLogger();
 
@@ -81,8 +81,15 @@ public class AsyncErrorLogger {
 				@Override
 				public void run() {
 					synchronized (lock) {
+						List<String> info_list = new ArrayList<>(info.length);
+						for(Object o : info) info_list.add(String.valueOf(o));
 						writer.println("Error occured at " + new SimpleDateFormat("yyyy-MM-dd-HH-mm", Locale.ROOT).format(new Date()));
-						writer.println("Additional info: " + String.join(", ", Arrays.asList(info).stream().map(obj -> String.valueOf(obj)).collect(Collectors.toList())));
+						StringBuilder additional_info = new StringBuilder("Additional info: ");
+						for(int i = 0; i < info.length; i++) {
+							if(i > 0) additional_info.append(", ");
+							additional_info.append(info[i]);
+						}
+						writer.println(additional_info.toString());
 						writer.println("Exception class: " + t.getClass().getName());
 						writer.println("Exception message: " + t.getMessage());
 						writer.println("Exception log:");

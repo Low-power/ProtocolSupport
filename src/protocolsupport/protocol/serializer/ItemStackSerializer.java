@@ -94,7 +94,7 @@ public class ItemStackSerializer {
 						tag.writeToStream(outputstream);
 					}
 					//now replace fake length with real length
-					to.setShort(writerIndex, to.writerIndex() - writerIndex - Short.BYTES);
+					to.setShort(writerIndex, to.writerIndex() - writerIndex - 2);
 				}
 			} else if (isUsingDirectOrZeroIfNoneNBT(version)) {
 				if (tag.isNull()) {

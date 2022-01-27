@@ -46,82 +46,98 @@ public class TileNBTRemapper {
 		for (TileEntityUpdateType type : TileEntityUpdateType.values()) {
 			register(
 				type,
-				(version, input) -> {
-					input.setString(tileEntityTypeKey, newToOldType.getOrDefault(input.getString(tileEntityTypeKey), "Unknown"));
-					return input;
+				new TileEntitySpecificRemapper() {
+					public NBTTagCompoundWrapper remap(ProtocolVersion version, NBTTagCompoundWrapper input) {
+						String old_name = newToOldType.get(input.getString(tileEntityTypeKey));
+						if(old_name == null) old_name = "Unknown";
+						input.setString(tileEntityTypeKey, old_name);
+						return input;
+					}
 				},
 				ProtocolVersionsHelper.BEFORE_1_11
 			);
 		}
 		register(
 			TileEntityUpdateType.MOB_SPAWNER,
-			(version, input) -> {
-				if (!input.hasKeyOfType("SpawnData", NBTTagCompoundWrapper.TYPE_COMPOUND)) {
-					NBTTagCompoundWrapper spawndata = ServerPlatform.get().getWrapperFactory().createEmptyNBTCompound();
-					spawndata.setString("id", "minecraft:pig");
-					input.setCompound("SpawnData", spawndata);
+			new TileEntitySpecificRemapper() {
+				public NBTTagCompoundWrapper remap(ProtocolVersion version, NBTTagCompoundWrapper input) {
+					if (!input.hasKeyOfType("SpawnData", NBTTagCompoundWrapper.TYPE_COMPOUND)) {
+						NBTTagCompoundWrapper spawndata = ServerPlatform.get().getWrapperFactory().createEmptyNBTCompound();
+						spawndata.setString("id", "minecraft:pig");
+						input.setCompound("SpawnData", spawndata);
+					}
+					return input;
 				}
-				return input;
 			},
 			ProtocolVersionsHelper.ALL
 		);
 		register(
 			TileEntityUpdateType.MOB_SPAWNER,
-			(version, input) -> {
-				NBTTagCompoundWrapper spawndata = input.getCompound("SpawnData");
-				if (!spawndata.isNull()) {
-					String mobname = spawndata.getString("id");
-					if (!mobname.isEmpty()) {
-						spawndata.setString("id", LegacyEntityType.getLegacyName(mobname));
+			new TileEntitySpecificRemapper() {
+				public NBTTagCompoundWrapper remap(ProtocolVersion version, NBTTagCompoundWrapper input) {
+					NBTTagCompoundWrapper spawndata = input.getCompound("SpawnData");
+					if (!spawndata.isNull()) {
+						String mobname = spawndata.getString("id");
+						if (!mobname.isEmpty()) {
+							spawndata.setString("id", LegacyEntityType.getLegacyName(mobname));
+						}
 					}
+					return input;
 				}
-				return input;
 			},
 			ProtocolVersion.getAllBetween(ProtocolVersion.MINECRAFT_1_9, ProtocolVersion.MINECRAFT_1_10)
 		);
 		register(
 			TileEntityUpdateType.MOB_SPAWNER,
-			(version, input) -> {
-				NBTTagCompoundWrapper spawndata = input.getCompound("SpawnData");
-				input.remove("SpawnPotentials");
-				input.remove("SpawnData");
-				if (!spawndata.isNull()) {
-					String mobname = spawndata.getString("id");
-					if (!mobname.isEmpty()) {
-						input.setString("EntityId", LegacyEntityType.getLegacyName(mobname));
+			new TileEntitySpecificRemapper() {
+				public NBTTagCompoundWrapper remap(ProtocolVersion version, NBTTagCompoundWrapper input) {
+					NBTTagCompoundWrapper spawndata = input.getCompound("SpawnData");
+					input.remove("SpawnPotentials");
+					input.remove("SpawnData");
+					if (!spawndata.isNull()) {
+						String mobname = spawndata.getString("id");
+						if (!mobname.isEmpty()) {
+							input.setString("EntityId", LegacyEntityType.getLegacyName(mobname));
+						}
 					}
+					return input;
 				}
-				return input;
 			},
 			ProtocolVersionsHelper.BEFORE_1_9
 		);
 		register(
 			TileEntityUpdateType.SKULL,
-			(version, input) -> {
-				if (input.getNumber("SkullType") == 5) {
-					input.setByte("SkullType", 3);
-					input.setCompound("Owner", ItemStackRemapper.createDragonHeadSkullTag());
+			new TileEntitySpecificRemapper() {
+				public NBTTagCompoundWrapper remap(ProtocolVersion version, NBTTagCompoundWrapper input) {
+					if (input.getNumber("SkullType") == 5) {
+						input.setByte("SkullType", 3);
+						input.setCompound("Owner", ItemStackRemapper.createDragonHeadSkullTag());
+					}
+					return input;
 				}
-				return input;
 			},
 			ProtocolVersion.getAllBefore(ProtocolVersion.MINECRAFT_1_8)
 		);
 		register(
 			TileEntityUpdateType.SKULL,
-			(version, input) -> {
-				ItemStackRemapper.remapSkull(input);
-				return input;
+			new TileEntitySpecificRemapper() {
+				public NBTTagCompoundWrapper remap(ProtocolVersion version, NBTTagCompoundWrapper input) {
+					ItemStackRemapper.remapSkull(input);
+					return input;
+				}
 			},
 			ProtocolVersion.getAllBefore(ProtocolVersion.MINECRAFT_1_7_5)
 		);
 		register(
 			TileEntityUpdateType.FLOWER_POT,
-			(version, input) -> {
-				Integer id = ItemData.getIdByName(input.getString("Item"));
-				if (id != null) {
-					input.setInt("Item", ItemStackRemapper.ITEM_ID_REMAPPING_REGISTRY.getTable(version).getRemap(id));
+			new TileEntitySpecificRemapper() {
+				public NBTTagCompoundWrapper remap(ProtocolVersion version, NBTTagCompoundWrapper input) {
+					Integer id = ItemData.getIdByName(input.getString("Item"));
+					if (id != null) {
+						input.setInt("Item", ItemStackRemapper.ITEM_ID_REMAPPING_REGISTRY.getTable(version).getRemap(id));
+					}
+					return input;
 				}
-				return input;
 			},
 			ProtocolVersionsHelper.BEFORE_1_8
 		);

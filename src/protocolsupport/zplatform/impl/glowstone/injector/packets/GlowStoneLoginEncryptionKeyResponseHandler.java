@@ -17,7 +17,7 @@ import protocolsupport.zplatform.impl.glowstone.network.GlowStoneNetworkManagerW
 public class GlowStoneLoginEncryptionKeyResponseHandler implements MessageHandler<GlowSession, EncryptionKeyResponseMessage> {
 
 	@Override
-	public void handle(GlowSession session, EncryptionKeyResponseMessage msg) {
+	public void handle(GlowSession session, final EncryptionKeyResponseMessage msg) {
 		((AbstractLoginListener) GlowStoneNetworkManagerWrapper.getPacketListener(session)).handleEncryption(new EncryptionPacketWrapper() {
 			@Override
 			public SecretKey getSecretKey(PrivateKey key) {

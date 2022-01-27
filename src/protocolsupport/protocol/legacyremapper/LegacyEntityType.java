@@ -96,7 +96,8 @@ public class LegacyEntityType {
 	}
 
 	public static String getLegacyName(String name) {
-		return legacyNames.getOrDefault(name, "Unknown");
+		String legacy_name = legacyNames.get(name);
+		return legacy_name == null ? "Unknown" : legacy_name;
 	}
 
 }

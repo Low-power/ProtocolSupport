@@ -22,9 +22,11 @@ public abstract class AbstractPacketDecoder extends MessageToMessageDecoder<Byte
 	public AbstractPacketDecoder(Connection connection, NetworkDataCache cache) {
 		this.connection = connection;
 		this.cache = cache;
-		registry.setCallBack(object -> {
-			object.setConnection(AbstractPacketDecoder.this.connection);
-			object.setSharedStorage(AbstractPacketDecoder.this.cache);
+		registry.setCallBack(new MiddleTransformerRegistry.InitCallBack<ServerBoundMiddlePacket>() {
+			public void onInit(ServerBoundMiddlePacket packet) {
+				packet.setConnection(AbstractPacketDecoder.this.connection);
+				packet.setSharedStorage(AbstractPacketDecoder.this.cache);
+			}
 		});
 	}
 
@@ -37,7 +39,11 @@ public abstract class AbstractPacketDecoder extends MessageToMessageDecoder<Byte
 				to.add(receivedata);
 			}
 		} finally {
-			packets.recycle();
+			try {
+				packets.close();
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

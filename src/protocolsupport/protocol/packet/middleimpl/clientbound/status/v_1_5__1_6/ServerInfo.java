@@ -1,7 +1,5 @@
 package protocolsupport.protocol.packet.middleimpl.clientbound.status.v_1_5__1_6;
 
-import java.util.StringJoiner;
-
 import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.packet.ClientBoundPacket;
@@ -19,15 +17,14 @@ public class ServerInfo extends MiddleServerInfo {
 		ClientBoundPacketData serializer = ClientBoundPacketData.create(ClientBoundPacket.STATUS_SERVER_INFO_ID, version);
 		PingResponse ping = PingResponse.fromJson(pingJson);
 		int versionId = ping.getProtocolData().getVersion();
-		String response = new StringJoiner("\u0000")
-		.add("§1")
-		.add(String.valueOf(versionId == ProtocolVersion.getLatest(ProtocolType.PC).getId() ? version.getId() : versionId))
-		.add(ping.getProtocolData().getName())
-		.add(ping.getMotd().toLegacyText())
-		.add(String.valueOf(ping.getPlayers().getOnline()))
-		.add(String.valueOf(ping.getPlayers().getMax()))
-		.toString();
-		StringSerializer.writeString(serializer, version, response);
+		StringBuilder response = new StringBuilder();
+		response.append("§1").append("\u0000");
+		response.append(String.valueOf(versionId == ProtocolVersion.getLatest(ProtocolType.PC).getId() ? version.getId() : versionId)).append("\u0000");
+		response.append(ping.getProtocolData().getName()).append("\u0000");
+		response.append(ping.getMotd().toLegacyText()).append("\u0000");
+		response.append(String.valueOf(ping.getPlayers().getOnline())).append("\u0000");
+		response.append(String.valueOf(ping.getPlayers().getMax()));
+		StringSerializer.writeString(serializer, version, response.toString());
 		return RecyclableSingletonList.create(serializer);
 	}
 

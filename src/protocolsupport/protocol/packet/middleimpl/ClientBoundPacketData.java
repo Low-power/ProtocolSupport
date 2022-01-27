@@ -5,9 +5,8 @@ import io.netty.util.Recycler;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.utils.netty.Allocator;
 import protocolsupport.utils.netty.WrappingBuffer;
-import protocolsupport.utils.recyclable.Recyclable;
 
-public class ClientBoundPacketData extends WrappingBuffer implements Recyclable {
+public class ClientBoundPacketData extends WrappingBuffer implements AutoCloseable {
 
 	private static final Recycler<ClientBoundPacketData> RECYCLER = new Recycler<ClientBoundPacketData>() {
 		@Override
@@ -28,8 +27,7 @@ public class ClientBoundPacketData extends WrappingBuffer implements Recyclable 
 		this.handle = handle;
 	}
 
-	@Override
-	public void recycle() {
+	public void close() {
 		packetId = 0;
 		clear();
 		RECYCLER.recycle(this, handle);

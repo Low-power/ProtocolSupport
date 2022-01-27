@@ -9,6 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 
 import javax.crypto.SecretKey;
@@ -28,14 +29,13 @@ import protocolsupport.api.events.PlayerPropertiesResolveEvent.ProfileProperty;
 import protocolsupport.protocol.ConnectionImpl;
 import protocolsupport.protocol.utils.authlib.GameProfile;
 import protocolsupport.utils.Utils;
-import protocolsupport.utils.Utils.Converter;
 import protocolsupport.zplatform.ServerPlatform;
 import protocolsupport.zplatform.network.NetworkManagerWrapper;
 
 public abstract class AbstractLoginListener implements IHasProfile {
 
-	private static final int loginThreads = Utils.getJavaPropertyValue("loginthreads", Integer.MAX_VALUE, Converter.STRING_TO_INT);
-	private static final int loginThreadKeepAlive = Utils.getJavaPropertyValue("loginthreadskeepalive", 60, Converter.STRING_TO_INT);
+	private static final int loginThreads = Utils.getJavaPropertyValue("loginthreads", Integer.valueOf(Integer.MAX_VALUE));
+	private static final int loginThreadKeepAlive = Utils.getJavaPropertyValue("loginthreadskeepalive", Integer.valueOf(60));
 
 	public static void init() {
 		ProtocolSupport.logInfo(MessageFormat.format("Login threads max count: {0}, keep alive time: {1}", loginThreads, loginThreadKeepAlive));
@@ -45,7 +45,11 @@ public abstract class AbstractLoginListener implements IHasProfile {
 		1, loginThreads,
 		loginThreadKeepAlive, TimeUnit.SECONDS,
 		new LinkedBlockingQueue<Runnable>(),
-		r -> new Thread(r, "LoginProcessingThread")
+		new ThreadFactory() {
+			public Thread newThread(Runnable r) {
+				return new Thread(r, "LoginProcessingThread");
+			}
+		}
 	);
 
 	protected final NetworkManagerWrapper networkManager;
@@ -78,7 +82,7 @@ public abstract class AbstractLoginListener implements IHasProfile {
 	}
 
 	@SuppressWarnings("unchecked")
-	public void disconnect(String s) {
+	public void disconnect(final String s) {
 		try {
 			Bukkit.getLogger().info("Disconnecting " + getConnectionRepr() + ": " + s);
 			networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createLoginDisconnectPacket(s), new GenericFutureListener<Future<? super Void>>() {
@@ -113,7 +117,7 @@ public abstract class AbstractLoginListener implements IHasProfile {
 		return (profile != null) ? (profile + " (" + networkManager.getAddress() + ")") : networkManager.getAddress().toString();
 	}
 
-	public void handleLoginStart(String name) {
+	public void handleLoginStart(final String name) {
 		Validate.isTrue(state == LoginState.HELLO, "Unexpected hello packet");
 		state = LoginState.ONLINEMODERESOLVE;
 		loginprocessor.execute(new Runnable() {
@@ -162,7 +166,7 @@ public abstract class AbstractLoginListener implements IHasProfile {
 
 	}
 
-	public void handleEncryption(EncryptionPacketWrapper encryptionpakcet) {
+	public void handleEncryption(final EncryptionPacketWrapper encryptionpakcet) {
 		Validate.isTrue(state == LoginState.KEY, "Unexpected key packet");
 		state = LoginState.AUTHENTICATING;
 		loginprocessor.execute(new Runnable() {

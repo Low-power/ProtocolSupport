@@ -41,7 +41,8 @@ public class I18N {
 	}
 
 	public String getI18N(String key) {
-		return i18n.getOrDefault(key, key);
+		String s = i18n.get(key);
+		return s == null ? key : s;
 	}
 
 }
