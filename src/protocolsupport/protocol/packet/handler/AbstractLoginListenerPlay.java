@@ -41,28 +41,11 @@ public abstract class AbstractLoginListenerPlay implements IHasProfile {
 		return profile;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void finishLogin() {
 		if (!networkManager.isConnected()) {
 			return;
 		}
 
-		// send login success
-		networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createLoginSuccessPacket(profile), new GenericFutureListener<Future<? super Void>>() {
-			@Override
-			public void operationComplete(Future<? super Void> future) throws Exception {
-				networkManager.setProtocol(NetworkState.PLAY);
-			}
-		});
-		// tick connection keep now
-		keepConnection();
-		// now fire login event
-		PlayerLoginFinishEvent event = new PlayerLoginFinishEvent(ConnectionImpl.getFromChannel(networkManager.getChannel()), profile.getName(), profile.getUUID(), onlineMode);
-		Bukkit.getPluginManager().callEvent(event);
-		if (event.isLoginDenied()) {
-			disconnect(event.getDenyLoginMessage());
-			return;
-		}
 		ready = true;
 	}
 
@@ -79,6 +62,7 @@ public abstract class AbstractLoginListenerPlay implements IHasProfile {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void tryJoin() {
 		// find players with same uuid and kick them
 		boolean kicked = false;
@@ -115,8 +99,29 @@ public abstract class AbstractLoginListenerPlay implements IHasProfile {
 			return;
 		}
 
+		// send login success
+		networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createLoginSuccessPacket(profile), new GenericFutureListener<Future<? super Void>>() {
+			@Override
+			public void operationComplete(Future<? super Void> future) throws Exception {
+				networkManager.setProtocol(NetworkState.PLAY);
+			}
+		});
+		// tick connection keep now
+		keepConnection();
+
+		// Skipped PlayerLoginFinishEvent
+/*
+		PlayerLoginFinishEvent event = new PlayerLoginFinishEvent(ConnectionImpl.getFromChannel(networkManager.getChannel()), profile.getName(), profile.getUUID(), onlineMode);
+		Bukkit.getPluginManager().callEvent(event);
+		if (event.isLoginDenied()) {
+			disconnect(event.getDenyLoginMessage());
+			return;
+		}
+*/
+
 		//send packet to notify about actual login phase finished
 		networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createEmptyCustomPayloadPacket("PS|FinishLogin"));
+
 		//add player to game
 		joinGame(joindata.data);
 	}
