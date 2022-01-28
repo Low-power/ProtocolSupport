@@ -55,7 +55,7 @@ public class GameProfileSerializer {
 			if (tag.hasKeyOfType(UUID_KEY, NBTTagCompoundWrapper.TYPE_STRING)) {
 				uuid = UUID.fromString(tag.getString(UUID_KEY));
 			}
-		} catch (Throwable t) {
+		} catch(Exception e) {
 		}
 		if (StringUtils.isEmpty(name) && (uuid == null)) {
 			return null;

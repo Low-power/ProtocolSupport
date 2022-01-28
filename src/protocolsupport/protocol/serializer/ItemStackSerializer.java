@@ -106,8 +106,8 @@ public class ItemStackSerializer {
 			} else {
 				throw new IllegalArgumentException(MessageFormat.format("Don't know how to write nbt of version {0}", version));
 			}
-		} catch (Throwable ioexception) {
-			throw new EncoderException(ioexception);
+		} catch(Exception e) {
+			throw new EncoderException(e);
 		}
 	}
 

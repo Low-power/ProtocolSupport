@@ -25,12 +25,12 @@ public class ServerPlatform {
 			NetworkManager.class.getDeclaredFields();
 			SpigotConfig.class.getDeclaredFields();
 			current = new ServerPlatform("Spigot", new SpigotPlatformInjector(), new SpigotMiscUtils(), new SpigotPacketFactory(), new SpigotWrapperFactory());
-		} catch (Throwable t) {
+		} catch(Exception | NoClassDefFoundError | VerifyError e) {
 		}
 		try {
 			GlowServer.class.getDeclaredFields();
 			current = new ServerPlatform("GlowStone", new GlowstonePlatformInjector(), new GlowStoneMiscUtils(), new GlowStonePacketFactory(), new GlowStoneWrapperFactory());
-		} catch (Throwable t) {
+		} catch(Exception | NoClassDefFoundError | VerifyError e) {
 		}
 		return current != null;
 	}

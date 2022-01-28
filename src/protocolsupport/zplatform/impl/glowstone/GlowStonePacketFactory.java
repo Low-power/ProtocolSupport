@@ -857,21 +857,22 @@ public class GlowStonePacketFactory implements PlatformPacketFactory {
 
     private static final int INBOUND = 0, OUTBOUND = 1;
 
-    @SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	private static int getOpcode(ProtocolType protocolType, int direction, Class<? extends Message> messageClass) {
-        try {
-            GlowProtocol protocol = protocolType.getProtocol();
-            Class<? extends GlowProtocol> protocolClass = protocol.getClass();
-            Field lookupServiceField = ReflectionUtils.getField(protocolClass, direction == INBOUND ? "inboundCodecs" : "outboundCodecs");
-            lookupServiceField.setAccessible(true);
-            CodecLookupService service = (CodecLookupService) lookupServiceField.get(protocol);
-            Field messagesField = ReflectionUtils.getField(service.getClass(), "messages");
-            messagesField.setAccessible(true);
-            ConcurrentMap<Class<? extends Message>, CodecRegistration> messageMap = (ConcurrentMap<Class<? extends Message>, CodecRegistration>) messagesField.get(service);
-            return messageMap.get(messageClass).getOpcode();
-        } catch (Throwable ignored) {
-        	throw new RuntimeException("Unable to get opcode");
-        }
-    }
+		try {
+			GlowProtocol protocol = protocolType.getProtocol();
+			Class<? extends GlowProtocol> protocolClass = protocol.getClass();
+			Field lookupServiceField = ReflectionUtils.getField(protocolClass, direction == INBOUND ? "inboundCodecs" : "outboundCodecs");
+			lookupServiceField.setAccessible(true);
+			CodecLookupService service = (CodecLookupService) lookupServiceField.get(protocol);
+			Field messagesField = ReflectionUtils.getField(service.getClass(), "messages");
+			messagesField.setAccessible(true);
+			ConcurrentMap<Class<? extends Message>, CodecRegistration> messageMap = (ConcurrentMap<Class<? extends Message>, CodecRegistration>) messagesField.get(service);
+			return messageMap.get(messageClass).getOpcode();
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("Unable to get opcode");
+		}
+	}
 
 }

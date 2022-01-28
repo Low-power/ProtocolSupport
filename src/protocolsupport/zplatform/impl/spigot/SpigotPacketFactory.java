@@ -754,14 +754,14 @@ public class SpigotPacketFactory implements PlatformPacketFactory {
 		Map<Class<? extends Packet<?>>, EnumProtocol> protocolMap = null;
 		try {
 			protocolMap = (Map<Class<? extends Packet<?>>, EnumProtocol>) ReflectionUtils.setAccessible(EnumProtocol.class.getDeclaredField("f")).get(null);
-		} catch (Throwable t) {
-			throw new RuntimeException("Unable to get packet id map", t);
+		} catch(Exception e) {
+			throw new RuntimeException("Unable to get packet id map", e);
 		}
 		EnumProtocol protocol = protocolMap.get(packetClass);
 		try {
 			return (Map<EnumProtocolDirection, BiMap<Integer, Class<? extends Packet<?>>>>) ReflectionUtils.setAccessible(EnumProtocol.class.getDeclaredField("h")).get(protocol);
-		} catch (Throwable t) {
-			throw new RuntimeException("Unable to get packet id map", t);
+		} catch(Exception e) {
+			throw new RuntimeException("Unable to get packet id map", e);
 		}
 	}
 

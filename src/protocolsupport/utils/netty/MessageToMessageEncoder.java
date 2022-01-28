@@ -48,8 +48,8 @@ public abstract class MessageToMessageEncoder<I> extends ChannelOutboundHandlerA
 			}
 		} catch (EncoderException ex) {
 			throw ex;
-		} catch (Throwable t) {
-			throw new EncoderException(t);
+		} catch(Exception e) {
+			throw new EncoderException(e);
 		} finally {
 			if (instance != null) {
 				final int n = instance.size() - 1;

@@ -56,7 +56,7 @@ public abstract class ChunkTransformer {
 			if (hasBiomeData) {
 				chunkdata.readBytes(biomeData);
 			}
-		} catch (Throwable e) {
+		} catch(Exception e) {
 			throw new ChunkDataParseException(data, bitmap, hasSkyLight, hasBiomeData, e);
 		}
 	}
@@ -64,8 +64,8 @@ public abstract class ChunkTransformer {
 	public byte[] toLegacyData(ProtocolVersion version) {
 		try {
 			return toLegacyData0(version);
-		} catch (Throwable t) {
-			throw new ChunkDataParseException(data, bitmap, hasSkyLight, hasBiomeData, t);
+		} catch(Exception e) {
+			throw new ChunkDataParseException(data, bitmap, hasSkyLight, hasBiomeData, e);
 		}
 	}
 

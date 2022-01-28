@@ -76,9 +76,9 @@ public abstract class ConnectionImpl extends Connection {
 				if (!listener.onPacketSending(packet)) {
 					canSend = false;
 				}
-			} catch (Throwable t) {
+			} catch(Exception e) {
 				System.err.println("Error occured while handling packet sending");
-				t.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 		return canSend;
@@ -91,9 +91,9 @@ public abstract class ConnectionImpl extends Connection {
 				if (!listener.onPacketReceiving(packet)) {
 					canReceive = false;
 				}
-			} catch (Throwable t) {
+			} catch(Exception e) {
 				System.err.println("Error occured while handling packet receiving");
-				t.printStackTrace();
+				e.printStackTrace();
 			}
 		}
 		return canReceive;

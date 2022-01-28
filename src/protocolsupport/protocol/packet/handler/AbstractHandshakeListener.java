@@ -50,8 +50,8 @@ public abstract class AbstractHandshakeListener {
 							return;
 						}
 					}
-				} catch (Throwable t) {
-					Bukkit.getLogger().log(Level.WARNING, "Failed to check connection throttle", t);
+				} catch(Exception e) {
+					Bukkit.getLogger().log(Level.WARNING, "Failed to check connection throttle", e);
 				}
 				//check client version (may be not latest if connection was from snapshot)
 				ProtocolVersion clientversion = ProtocolVersion.fromId(clientVersion);

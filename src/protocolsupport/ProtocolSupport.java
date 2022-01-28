@@ -62,8 +62,8 @@ public class ProtocolSupport extends JavaPlugin {
 			IdRemapper.init();
 			BlockStorageReader.init();
 			ServerPlatform.get().inject();
-		} catch (Throwable t) {
-			getLogger().log(Level.SEVERE, "Error when loading, make sure you are using supported server version", t);
+		} catch(Exception e) {
+			getLogger().log(Level.SEVERE, "Error when loading, make sure you are using supported server version", e);
 			Bukkit.shutdown();
 		}
 	}
