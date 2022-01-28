@@ -11,7 +11,6 @@ import com.google.gson.Gson;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.api.events.ConnectionHandshakeEvent;
 import protocolsupport.api.events.PlayerPropertiesResolveEvent.ProfileProperty;
@@ -56,7 +55,7 @@ public abstract class AbstractHandshakeListener {
 				}
 				//check client version (may be not latest if connection was from snapshot)
 				ProtocolVersion clientversion = ProtocolVersion.fromId(clientVersion);
-				if (clientversion != ProtocolVersion.getLatest(ProtocolType.PC)) {
+				if (clientversion != ProtocolVersion.getLatest()) {
 					final String message = MessageFormat.format(ServerPlatform.get().getMiscUtils().getOutdatedServerMessage().replace("'", "''"), ServerPlatform.get().getMiscUtils().getVersionName());
 					this.networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createLoginDisconnectPacket(message), new GenericFutureListener<Future<? super Void>>() {
 						@Override

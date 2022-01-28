@@ -1,7 +1,6 @@
 package protocolsupport.protocol.packet.middle.clientbound.play;
 
 import io.netty.buffer.ByteBuf;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.packet.middle.ClientBoundMiddlePacket;
 import protocolsupport.protocol.serializer.StringSerializer;
@@ -16,9 +15,9 @@ public abstract class MiddleScoreboardScore extends ClientBoundMiddlePacket {
 
 	@Override
 	public void readFromServerData(ByteBuf serverdata) {
-		name = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(ProtocolType.PC), 40);
+		name = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(), 40);
 		mode = serverdata.readUnsignedByte();
-		objectiveName = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(ProtocolType.PC), 16);
+		objectiveName = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(), 16);
 		if (mode != 1) {
 			value = VarNumberSerializer.readVarInt(serverdata);
 		}

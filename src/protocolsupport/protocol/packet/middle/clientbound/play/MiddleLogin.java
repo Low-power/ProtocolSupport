@@ -1,7 +1,6 @@
 package protocolsupport.protocol.packet.middle.clientbound.play;
 
 import io.netty.buffer.ByteBuf;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.api.tab.TabAPI;
 import protocolsupport.protocol.packet.middle.ClientBoundMiddlePacket;
@@ -27,7 +26,7 @@ public abstract class MiddleLogin extends ClientBoundMiddlePacket {
 		difficulty = serverdata.readByte();
 		serverdata.readByte();
 		maxplayers = TabAPI.getMaxTabSize();
-		leveltype = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(ProtocolType.PC), 16);
+		leveltype = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(), 16);
 		reducedDebugInfo = serverdata.readBoolean();
 	}
 

@@ -1,7 +1,6 @@
 package protocolsupport.protocol.packet.middle.clientbound.play;
 
 import io.netty.buffer.ByteBuf;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.packet.middle.ClientBoundMiddlePacket;
 import protocolsupport.protocol.serializer.StringSerializer;
@@ -21,15 +20,15 @@ public abstract class MiddleTitle extends ClientBoundMiddlePacket {
 		action = Action.values()[VarNumberSerializer.readVarInt(serverdata)];
 		switch (action) {
 			case SET_TITLE: {
-				titleJson = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(ProtocolType.PC));
+				titleJson = StringSerializer.readString(serverdata, ProtocolVersion.getLatest());
 				break;
 			}
 			case SET_SUBTITLE: {
-				subtitleJson = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(ProtocolType.PC));
+				subtitleJson = StringSerializer.readString(serverdata, ProtocolVersion.getLatest());
 				break;
 			}
 			case SET_ACTION_BAR: {
-				titleJson = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(ProtocolType.PC));
+				titleJson = StringSerializer.readString(serverdata, ProtocolVersion.getLatest());
 				break;
 			}
 			case SET_TIMES: {

@@ -1,6 +1,5 @@
 package protocolsupport.protocol.packet.middleimpl.clientbound.status.v_1_5__1_6;
 
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.packet.ClientBoundPacket;
 import protocolsupport.protocol.packet.middle.clientbound.status.MiddleServerInfo;
@@ -19,7 +18,7 @@ public class ServerInfo extends MiddleServerInfo {
 		int versionId = ping.getProtocolData().getVersion();
 		StringBuilder response = new StringBuilder();
 		response.append("§1").append("\u0000");
-		response.append(String.valueOf(versionId == ProtocolVersion.getLatest(ProtocolType.PC).getId() ? version.getId() : versionId)).append("\u0000");
+		response.append(String.valueOf(versionId == ProtocolVersion.getLatest().getId() ? version.getId() : versionId)).append("\u0000");
 		response.append(ping.getProtocolData().getName()).append("\u0000");
 		response.append(ping.getMotd().toLegacyText()).append("\u0000");
 		response.append(String.valueOf(ping.getPlayers().getOnline())).append("\u0000");

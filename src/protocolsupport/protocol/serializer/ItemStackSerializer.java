@@ -15,7 +15,6 @@ import io.netty.buffer.ByteBufInputStream;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.EncoderException;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.api.events.ItemStackWriteEvent;
 import protocolsupport.protocol.typeremapper.itemstack.ItemStackRemapper;
@@ -113,11 +112,11 @@ public class ItemStackSerializer {
 	}
 
 	private static final boolean isUsingShortLengthNBT(ProtocolVersion version) {
-		return (version.getProtocolType() == ProtocolType.PC) && version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10);
+		return version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10);
 	}
 
 	private static final boolean isUsingDirectOrZeroIfNoneNBT(ProtocolVersion version) {
-		return (version.getProtocolType() == ProtocolType.PC) && version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_8);
+		return version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_8);
 	}
 
 	public static class InternalItemStackWriteEvent extends ItemStackWriteEvent {

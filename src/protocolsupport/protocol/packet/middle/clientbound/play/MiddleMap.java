@@ -1,7 +1,6 @@
 package protocolsupport.protocol.packet.middle.clientbound.play;
 
 import io.netty.buffer.ByteBuf;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.packet.middle.ClientBoundMiddlePacket;
 import protocolsupport.protocol.serializer.ByteArraySerializer;
@@ -37,7 +36,7 @@ public abstract class MiddleMap extends ClientBoundMiddlePacket {
 			rows = serverdata.readUnsignedByte();
 			xstart = serverdata.readUnsignedByte();
 			zstart = serverdata.readUnsignedByte();
-			data = ByteArraySerializer.readByteArray(serverdata, ProtocolVersion.getLatest(ProtocolType.PC));
+			data = ByteArraySerializer.readByteArray(serverdata, ProtocolVersion.getLatest());
 		}
 	}
 

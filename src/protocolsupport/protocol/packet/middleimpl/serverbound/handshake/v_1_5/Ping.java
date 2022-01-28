@@ -3,7 +3,6 @@ package protocolsupport.protocol.packet.middleimpl.serverbound.handshake.v_1_5;
 import org.bukkit.Bukkit;
 
 import io.netty.buffer.ByteBuf;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.packet.ServerBoundPacket;
 import protocolsupport.protocol.packet.middle.ServerBoundMiddlePacket;
@@ -24,8 +23,8 @@ public class Ping extends ServerBoundMiddlePacket {
 	public RecyclableCollection<ServerBoundPacketData> toNative()  {
 		RecyclableArrayList<ServerBoundPacketData> packets = RecyclableArrayList.create();
 		ServerBoundPacketData hsscreator = ServerBoundPacketData.create(ServerBoundPacket.HANDSHAKE_START);
-		VarNumberSerializer.writeVarInt(hsscreator, ProtocolVersion.getLatest(ProtocolType.PC).getId());
-		StringSerializer.writeString(hsscreator, ProtocolVersion.getLatest(ProtocolType.PC), "");
+		VarNumberSerializer.writeVarInt(hsscreator, ProtocolVersion.getLatest().getId());
+		StringSerializer.writeString(hsscreator, ProtocolVersion.getLatest(), "");
 		hsscreator.writeShort(Bukkit.getPort());
 		VarNumberSerializer.writeVarInt(hsscreator, 1);
 		packets.add(hsscreator);

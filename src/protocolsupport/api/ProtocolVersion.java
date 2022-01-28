@@ -14,25 +14,25 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 
 public enum ProtocolVersion {
 
-	MINECRAFT_FUTURE(-1, new OrderId(ProtocolType.PC, 17)),
-	MINECRAFT_1_11_1(316, new OrderId(ProtocolType.PC, 16), "1.11.2"),
-	MINECRAFT_1_11(315, new OrderId(ProtocolType.PC, 15), "1.11"),
-	MINECRAFT_1_10(210, new OrderId(ProtocolType.PC, 14), "1.10"),
-	MINECRAFT_1_9_4(110, new OrderId(ProtocolType.PC, 13), "1.9.4"),
-	MINECRAFT_1_9_2(109, new OrderId(ProtocolType.PC, 12), "1.9.2"),
-	MINECRAFT_1_9_1(108, new OrderId(ProtocolType.PC, 11), "1.9.1"),
-	MINECRAFT_1_9(107, new OrderId(ProtocolType.PC, 10), "1.9"),
-	MINECRAFT_1_8(47, new OrderId(ProtocolType.PC, 9), "1.8"),
-	MINECRAFT_1_7_10(5, new OrderId(ProtocolType.PC, 8), "1.7.10"),
-	MINECRAFT_1_7_5(4, new OrderId(ProtocolType.PC, 7), "1.7.5"),
-	MINECRAFT_1_6_4(78, new OrderId(ProtocolType.PC, 6), "1.6.4"),
-	MINECRAFT_1_6_2(74, new OrderId(ProtocolType.PC, 5), "1.6.2"),
-	MINECRAFT_1_6_1(73, new OrderId(ProtocolType.PC, 4), "1.6.1"),
-	MINECRAFT_1_5_2(61, new OrderId(ProtocolType.PC, 3), "1.5.2"),
-	MINECRAFT_1_5_1(60, new OrderId(ProtocolType.PC, 2), "1.5.1"),
-	MINECRAFT_1_4_7(51, new OrderId(ProtocolType.PC, 1), "1.4.7"),
-	MINECRAFT_LEGACY(-1, new OrderId(ProtocolType.PC, 0)),
-	UNKNOWN(-1, new OrderId(ProtocolType.UNKNOWN, 0));
+	MINECRAFT_FUTURE(-1, new OrderId(17)),
+	MINECRAFT_1_11_1(316, new OrderId(16), "1.11.2"),
+	MINECRAFT_1_11(315, new OrderId(15), "1.11"),
+	MINECRAFT_1_10(210, new OrderId(14), "1.10"),
+	MINECRAFT_1_9_4(110, new OrderId(13), "1.9.4"),
+	MINECRAFT_1_9_2(109, new OrderId(12), "1.9.2"),
+	MINECRAFT_1_9_1(108, new OrderId(11), "1.9.1"),
+	MINECRAFT_1_9(107, new OrderId(10), "1.9"),
+	MINECRAFT_1_8(47, new OrderId(9), "1.8"),
+	MINECRAFT_1_7_10(5, new OrderId(8), "1.7.10"),
+	MINECRAFT_1_7_5(4, new OrderId(7), "1.7.5"),
+	MINECRAFT_1_6_4(78, new OrderId(6), "1.6.4"),
+	MINECRAFT_1_6_2(74, new OrderId(5), "1.6.2"),
+	MINECRAFT_1_6_1(73, new OrderId(4), "1.6.1"),
+	MINECRAFT_1_5_2(61, new OrderId(3), "1.5.2"),
+	MINECRAFT_1_5_1(60, new OrderId(2), "1.5.1"),
+	MINECRAFT_1_4_7(51, new OrderId(1), "1.4.7"),
+	MINECRAFT_LEGACY(-1, new OrderId(0)),
+	UNKNOWN(-1, new OrderId(-1));
 
 	private final int id;
 	private final OrderId orderId;
@@ -46,14 +46,6 @@ public enum ProtocolVersion {
 		this.id = id;
 		this.orderId = orderId;
 		this.name = name;
-	}
-
-	/**
-	 * Return protocol type of this protocol version
-	 * @return {@link ProtocolType} of this protocol version
-	 */
-	public ProtocolType getProtocolType() {
-		return orderId.type;
 	}
 
 	/**
@@ -152,24 +144,22 @@ public enum ProtocolVersion {
 		return version != null ? version : UNKNOWN;
 	}
 
-	private static final EnumMap<ProtocolType, ProtocolVersion[]> byOrderId = new EnumMap<>(ProtocolType.class);
+	private static final ProtocolVersion[] sorted_versions;
 	static {
-		for (ProtocolType type : ProtocolType.values()) {
-			if (type != ProtocolType.UNKNOWN) {
-				List<ProtocolVersion> sorted_versions = new ArrayList<>(Arrays.asList(ProtocolVersion.values()));
-				Iterator<ProtocolVersion> iterator = sorted_versions.iterator();
-				while(iterator.hasNext()) {
-					ProtocolVersion version = iterator.next();
-					if(version.getProtocolType() != type) iterator.remove();
-				}
-				Collections.sort(sorted_versions, new Comparator<ProtocolVersion>() {
-						public int compare(ProtocolVersion v1, ProtocolVersion v2) {
-							return v1.orderId.compareTo(v2.orderId);
-						}
-					});
-				byOrderId.put(type, sorted_versions.toArray(new ProtocolVersion[0]));
-			}
+		//List<ProtocolVersion> sorted_version_list = new ArrayList<>(Arrays.asList(values()));
+		//List<ProtocolVersion> sorted_version_list = Arrays.asList(values());
+		ProtocolVersion[] versions = values();
+		List<ProtocolVersion> sorted_version_list = new ArrayList<>(versions.length);
+		for(ProtocolVersion v : versions) {
+			if(v.orderId.id < 0) continue;
+			sorted_version_list.add(v);
 		}
+		Collections.sort(sorted_version_list, new Comparator<ProtocolVersion>() {
+				public int compare(ProtocolVersion v1, ProtocolVersion v2) {
+					return v1.orderId.compareTo(v2.orderId);
+				}
+			});
+		sorted_versions = sorted_version_list.toArray(new ProtocolVersion[0]);
 	}
 
 	/**
@@ -179,11 +169,9 @@ public enum ProtocolVersion {
 	 * @throws IllegalArgumentException if protocol type is UNKNOWN
 	 */
 	public ProtocolVersion next() {
-		Validate.isTrue(getProtocolType() != ProtocolType.UNKNOWN, "Can't get next version for unknown protocol type");
-		ProtocolVersion[] versions = byOrderId.get(getProtocolType());
 		int nextVersionOrderId = orderId.id + 1;
-		if (nextVersionOrderId < versions.length) {
-			return versions[nextVersionOrderId];
+		if (nextVersionOrderId < sorted_versions.length) {
+			return sorted_versions[nextVersionOrderId];
 		} else {
 			return null;
 		}
@@ -196,11 +184,9 @@ public enum ProtocolVersion {
 	 * @throws IllegalArgumentException if protocol type is UNKNOWN
 	 */
 	public ProtocolVersion previous() {
-		Validate.isTrue(getProtocolType() != ProtocolType.UNKNOWN, "Can't get next version for unknown protocol type");
-		ProtocolVersion[] versions = byOrderId.get(getProtocolType());
 		int previousVersionOrderId = orderId.id - 1;
 		if (previousVersionOrderId >= 0) {
-			return versions[previousVersionOrderId];
+			return sorted_versions[previousVersionOrderId];
 		} else {
 			return null;
 		}
@@ -214,15 +200,11 @@ public enum ProtocolVersion {
 	 * @return all protocol versions that are between specified ones (inclusive)
 	 */
 	public static ProtocolVersion[] getAllBetween(ProtocolVersion one, ProtocolVersion another) {
-		ProtocolType type = one.getProtocolType();
-		Validate.isTrue(type == another.getProtocolType(), "Can't get versions between different protocol types");
-		Validate.isTrue(type != ProtocolType.UNKNOWN, "Can't get versions for unknown protocol type");
-		ProtocolVersion[] versions = byOrderId.get(type);
 		int startId = Math.min(one.orderId.id, another.orderId.id);
 		int endId = Math.max(one.orderId.id, another.orderId.id);
 		ProtocolVersion[] between = new ProtocolVersion[(endId - startId) + 1];
 		for (int i = startId; i <= endId; i++) {
-			between[i - startId] = versions[i];
+			between[i - startId] = sorted_versions[i];
 		}
 		return between;
 	}
@@ -233,15 +215,8 @@ public enum ProtocolVersion {
 	 * @return latest supported protocol version for specified protocol type
 	 * @throws IllegalArgumentException if protocol type has not supported protocol versions
 	 */
-	public static ProtocolVersion getLatest(ProtocolType type) {
-		switch (type) {
-			case PC: {
-				return MINECRAFT_1_11_1;
-			}
-			default: {
-				throw new IllegalArgumentException(MessageFormat.format("No supported versions for protocol type {0}", type));
-			}
-		}
+	public static ProtocolVersion getLatest() {
+		return MINECRAFT_1_11_1;
 	}
 
 	/**
@@ -250,15 +225,8 @@ public enum ProtocolVersion {
 	 * @return oldest supported protocol version for specified protocol type
 	 * @throws IllegalArgumentException if protocol type has not supported protocol versions
 	 */
-	public static ProtocolVersion getOldest(ProtocolType type) {
-		switch (type) {
-			case PC: {
-				return MINECRAFT_1_4_7;
-			}
-			default: {
-				throw new IllegalArgumentException(MessageFormat.format("No supported versions for protocol type {0}", type));
-			}
-		}
+	public static ProtocolVersion getOldest() {
+		return MINECRAFT_1_4_7;
 	}
 
 	/**
@@ -270,7 +238,7 @@ public enum ProtocolVersion {
 	 */
 	@Deprecated
 	public static ProtocolVersion[] getAllAfter(ProtocolVersion version) {
-		return getAllBetween(version, getLatest(version.getProtocolType()));
+		return getAllBetween(version, getLatest());
 	}
 
 	/**
@@ -282,44 +250,19 @@ public enum ProtocolVersion {
 	 */
 	@Deprecated
 	public static ProtocolVersion[] getAllBefore(ProtocolVersion version) {
-		return getAllBetween(getOldest(version.getProtocolType()), version);
-	}
-
-	/**
-	 * Returns latest supported protocol version for {@link ProtocolType} PC
-	 * @return latest supported protocol version for {@link ProtocolType} PC
-	 * @deprecated only returns latest version for {@link ProtocolType} PC
-	 */
-	@Deprecated
-	public static ProtocolVersion getLatest() {
-		return getLatest(ProtocolType.PC);
-	}
-
-	/**
-	 * Returns oldest supported protocol version for {@link ProtocolType} PC
-	 * @return oldest supported protocol version for {@link ProtocolType} PC
-	 * @deprecated only returns oldest version for {@link ProtocolType} PC
-	 */
-	@Deprecated
-	public static ProtocolVersion getOldest() {
-		return getOldest(ProtocolType.PC);
+		return getAllBetween(getOldest(), version);
 	}
 
 	private static class OrderId implements Comparable<OrderId> {
 
-		private final ProtocolType type;
 		private final int id;
 
-		public OrderId(ProtocolType type, int id) {
-			this.type = type;
+		public OrderId(int id) {
 			this.id = id;
 		}
 
 		@Override
 		public int compareTo(OrderId o) {
-			Validate.isTrue(this.type != ProtocolType.UNKNOWN, "Can't compare unknown protocol type");
-			Validate.isTrue(o.type != ProtocolType.UNKNOWN, "Can't compare with unknown protocol type");
-			Validate.isTrue(this.type == o.type, MessageFormat.format("Can't compare order from different types: this - {0}, other - {1}", type, o.type));
 			return Integer.compare(id, o.id);
 		}
 

@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 
 public class ByteArraySerializer {
@@ -42,11 +41,11 @@ public class ByteArraySerializer {
 	}
 
 	private static boolean isUsingShortLength(ProtocolVersion version) {
-		return (version.getProtocolType() == ProtocolType.PC) && version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10);
+		return version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10);
 	}
 
 	private static boolean isUsingVarIntLength(ProtocolVersion version) {
-		return (version.getProtocolType() == ProtocolType.PC) && version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_8);
+		return version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_8);
 	}
 
 }

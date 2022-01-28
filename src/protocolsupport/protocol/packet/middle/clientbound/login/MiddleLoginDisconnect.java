@@ -1,7 +1,6 @@
 package protocolsupport.protocol.packet.middle.clientbound.login;
 
 import io.netty.buffer.ByteBuf;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.packet.middle.ClientBoundMiddlePacket;
 import protocolsupport.protocol.serializer.StringSerializer;
@@ -12,7 +11,7 @@ public abstract class MiddleLoginDisconnect extends ClientBoundMiddlePacket {
 
 	@Override
 	public void readFromServerData(ByteBuf serverdata) {
-		messageJson = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(ProtocolType.PC));
+		messageJson = StringSerializer.readString(serverdata, ProtocolVersion.getLatest());
 	}
 
 }

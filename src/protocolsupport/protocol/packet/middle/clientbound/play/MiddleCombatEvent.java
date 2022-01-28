@@ -1,7 +1,6 @@
 package protocolsupport.protocol.packet.middle.clientbound.play;
 
 import io.netty.buffer.ByteBuf;
-import protocolsupport.api.ProtocolType;
 import protocolsupport.api.ProtocolVersion;
 import protocolsupport.protocol.packet.middle.ClientBoundMiddlePacket;
 import protocolsupport.protocol.serializer.MiscSerializer;
@@ -31,7 +30,7 @@ public abstract class MiddleCombatEvent extends ClientBoundMiddlePacket {
 			case ENTITY_DEAD: {
 				playerId = VarNumberSerializer.readVarInt(serverdata);
 				entityId = serverdata.readInt();
-				message = StringSerializer.readString(serverdata, ProtocolVersion.getLatest(ProtocolType.PC));
+				message = StringSerializer.readString(serverdata, ProtocolVersion.getLatest());
 				break;
 			}
 		}
