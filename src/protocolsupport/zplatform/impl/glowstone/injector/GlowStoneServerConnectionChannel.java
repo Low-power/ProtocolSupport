@@ -16,6 +16,7 @@ import protocolsupport.zplatform.impl.glowstone.GlowStoneConnectionImpl;
 import protocolsupport.zplatform.impl.glowstone.network.GlowStoneChannelHandlers;
 import protocolsupport.zplatform.impl.glowstone.network.pipeline.GlowStoneFramingHandler;
 import protocolsupport.zplatform.impl.glowstone.network.pipeline.GlowStoneSyncConnectionTicker;
+import java.util.NoSuchElementException;
 
 public class GlowStoneServerConnectionChannel extends ChannelInitializer<Channel> {
 
@@ -31,10 +32,16 @@ public class GlowStoneServerConnectionChannel extends ChannelInitializer<Channel
 		connection.storeInChannel(channel);
 		ProtocolStorage.addConnection(channel.remoteAddress(), connection);
 		ChannelPipeline pipeline = channel.pipeline();
-		pipeline.remove(GlowStoneChannelHandlers.READ_TIMEOUT);
+		try {
+			pipeline.remove(GlowStoneChannelHandlers.READ_TIMEOUT);
+		} catch(NoSuchElementException e) {
+		}
 		pipeline.remove("legacy_ping");
 		pipeline.remove("encryption");
-		pipeline.remove("writeidletimeout");
+		try {
+			pipeline.remove("writeidletimeout");
+		} catch(NoSuchElementException e) {
+		}
 		pipeline.remove("compression");
 		pipeline.addFirst(GlowStoneChannelHandlers.READ_TIMEOUT, new SimpleReadTimeoutHandler(30));
 		pipeline.addAfter(GlowStoneChannelHandlers.READ_TIMEOUT, ChannelHandlers.INITIAL_DECODER, new InitialPacketDecoder());
