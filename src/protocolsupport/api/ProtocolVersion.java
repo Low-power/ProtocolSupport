@@ -17,6 +17,7 @@ public enum ProtocolVersion {
 	MINECRAFT_LEGACY(-1),
 	MINECRAFT_1_4_7(51, "1.4.7"),
 	MINECRAFT_1_5_1(60, "1.5.1"),
+	MINECRAFT_2_0(90, "2.0"),
 	MINECRAFT_1_5_2(61, "1.5.2"),
 	MINECRAFT_1_6_1(73, "1.6.1"),
 	MINECRAFT_1_6_2(74, "1.6.2"),
