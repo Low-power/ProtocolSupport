@@ -1,10 +1,13 @@
-name: ProtocolSupport
-main: protocolsupport.ProtocolSupport
-version: 4.26.dev
-author: _Shevchik_
-load: STARTUP
-commands:
-  protocolsupport:
-    description: All ProtocolSupport commands
-    aliases: ps
-    usage: Invalid command
+{
+ "name":"ProtocolSupport",
+ "main":"protocolsupport.ProtocolSupport",
+ "version":"4.26.dev",
+ "author":"_Shevchik_",
+ "load":"STARTUP",
+ "commands":{
+  "protocolsupport":{
+   "description":"All ProtocolSupport commands",
+   "usage":"Invalid command"
+  }
+ }
+}
