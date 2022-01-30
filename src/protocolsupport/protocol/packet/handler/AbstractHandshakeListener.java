@@ -31,7 +31,7 @@ public abstract class AbstractHandshakeListener {
 	}
 
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	public void handleSetProtocol(int clientVersion, NetworkState nextState, String hostname, int port) {
+	public void handleSetProtocol(int proto_ver_num, NetworkState nextState, String hostname, int port) {
 		switch (nextState) {
 			case LOGIN: {
 				networkManager.setProtocol(NetworkState.LOGIN);
@@ -54,7 +54,7 @@ public abstract class AbstractHandshakeListener {
 					Bukkit.getLogger().log(Level.WARNING, "Failed to check connection throttle", e);
 				}
 				//check client version (may be not latest if connection was from snapshot)
-				ProtocolVersion clientversion = ProtocolVersion.fromId(clientVersion);
+				ProtocolVersion clientversion = ProtocolVersion.fromProtocolVersionNumber(true, proto_ver_num);
 				if (clientversion != ProtocolVersion.getLatest()) {
 					final String message = MessageFormat.format(ServerPlatform.get().getMiscUtils().getOutdatedServerMessage().replace("'", "''"), ServerPlatform.get().getMiscUtils().getVersionName());
 					this.networkManager.sendPacket(ServerPlatform.get().getPacketFactory().createLoginDisconnectPacket(message), new GenericFutureListener<Future<? super Void>>() {

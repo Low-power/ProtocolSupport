@@ -8,42 +8,50 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Comparator;
 import java.util.Iterator;
-import org.apache.commons.lang3.Validate;
-
 import gnu.trove.map.hash.TIntObjectHashMap;
 
 public enum ProtocolVersion {
 	UNKNOWN(-1),
 	MINECRAFT_LEGACY(-1),
-	MINECRAFT_1_4_7(51, "1.4.7"),
-	MINECRAFT_1_5_1(60, "1.5.1"),
-	MINECRAFT_2_0(90, "2.0"),
-	MINECRAFT_1_5_2(61, "1.5.2"),
-	MINECRAFT_1_6_1(73, "1.6.1"),
-	MINECRAFT_1_6_2(74, "1.6.2"),
-	MINECRAFT_1_6_4(78, "1.6.4"),
-	MINECRAFT_1_7_5(4, "1.7.5"),
-	MINECRAFT_1_7_10(5, "1.7.10"),
-	MINECRAFT_1_8(47, "1.8"),
-	MINECRAFT_1_9(107, "1.9"),
-	MINECRAFT_1_9_1(108, "1.9.1"),
-	MINECRAFT_1_9_2(109, "1.9.2"),
-	MINECRAFT_1_9_4(110, "1.9.4"),
-	MINECRAFT_1_10(210, "1.10"),
-	MINECRAFT_1_11(315, "1.11"),
-	MINECRAFT_1_11_1(316, "1.11.2"),
+	MINECRAFT_1_4_7(false, 51, "1.4.7"),
+	MINECRAFT_1_5_1(false, 60, "1.5.1"),
+	MINECRAFT_2_0(false, 90, "2.0"),
+	MINECRAFT_1_5_2(false, 61, "1.5.2"),
+	MINECRAFT_1_6_1(false, 73, "1.6.1"),
+	MINECRAFT_1_6_2(false, 74, "1.6.2"),
+	MINECRAFT_1_6_4(false, 78, "1.6.4"),
+	MINECRAFT_1_7_5(true, 4, "1.7.5"),
+	MINECRAFT_1_7_10(true, 5, "1.7.10"),
+	MINECRAFT_1_8(true, 47, "1.8"),
+	MINECRAFT_1_9(true, 107, "1.9"),
+	MINECRAFT_1_9_1(true, 108, "1.9.1"),
+	MINECRAFT_1_9_2(true, 109, "1.9.2"),
+	MINECRAFT_1_9_4(true, 110, "1.9.4"),
+	MINECRAFT_1_10(true, 210, "1.10"),
+	MINECRAFT_1_11(true, 315, "1.11"),
+	MINECRAFT_1_11_1(true, 316, "1.11.2"),
 	MINECRAFT_FUTURE(-1);
 
+	private boolean is_modern_protocol;
 	private final int id;
 	private final String name;
 
 	ProtocolVersion(int id) {
-		this(id, null);
+		this(false, id, null);
 	}
 
-	ProtocolVersion(int id, String name) {
+	ProtocolVersion(boolean is_modern_protocol, int id, String name) {
+		this.is_modern_protocol = is_modern_protocol;
 		this.id = id;
 		this.name = name;
+	}
+
+	/**
+	 * Returns whether this protocol version is after-Netty-rewrite since 13w41a.
+	 * @return true if this version is used by Minecraft 13w41a or later
+	 */
+	public boolean isModernProtocol() {
+		return is_modern_protocol;
 	}
 
 	/**
@@ -122,24 +130,41 @@ public enum ProtocolVersion {
 		return (isAfterOrEq(one) && isBeforeOrEq(another)) || (isBeforeOrEq(one) && isAfterOrEq(another));
 	}
 
-	private static final TIntObjectHashMap<ProtocolVersion> byProtocolId = new TIntObjectHashMap<>();
+	private static final TIntObjectHashMap<ProtocolVersion> modern_versions_by_number = new TIntObjectHashMap<>();
+	private static final TIntObjectHashMap<ProtocolVersion> legacy_versions_by_number = new TIntObjectHashMap<>();
 	static {
 		for(ProtocolVersion version : ProtocolVersion.values()) {
 			if(!version.isSupported()) continue;
-			byProtocolId.put(version.id, version);
+			if(version.isModernProtocol()) {
+				modern_versions_by_number.put(version.id, version);
+			} else {
+				legacy_versions_by_number.put(version.id, version);
+			}
 		}
+	}
+
+	/**
+	 * Get ProtocolVersion by network protocol version number
+	 * @param is_modern_protocol specific whether it is a modern protocol version
+	 * @param number the protocol version number
+	 * @return Returns protocol version or UNKNOWN if not found
+	 */
+	public static ProtocolVersion fromProtocolVersionNumber(boolean is_modern_protocol, int number) {
+		ProtocolVersion version =
+			(is_modern_protocol ? modern_versions_by_number : legacy_versions_by_number).
+				get(number);
+		return version != null ? version : UNKNOWN;
 	}
 
 	/**
 	 * Returns protocol version by network game id
 	 * @param id network version id
 	 * @return Returns protocol version by network game id or UNKNOWN if not found
-	 * @deprecated network version ids may be the same for different protocol versions
+	 * @deprecated legacy and modern protocol versions may share same numeric IDs
 	 */
 	@Deprecated
 	public static ProtocolVersion fromId(int id) {
-		ProtocolVersion version = byProtocolId.get(id);
-		return version != null ? version : UNKNOWN;
+		return fromProtocolVersionNumber(true, id);
 	}
 
 	/**

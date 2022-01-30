@@ -26,7 +26,8 @@ public class ProtocolUtils {
 
 	@SuppressWarnings("deprecation")
 	protected static ProtocolVersion readOldHandshake(ByteBuf data) {
-		ProtocolVersion version = ProtocolVersion.fromId(data.readUnsignedByte());
+		int number = data.readUnsignedByte();
+		ProtocolVersion version = ProtocolVersion.fromProtocolVersionNumber(false, number);
 		return version != ProtocolVersion.UNKNOWN ? version : ProtocolVersion.MINECRAFT_LEGACY;
 	}
 
@@ -34,7 +35,8 @@ public class ProtocolUtils {
 	protected static ProtocolVersion readNettyHandshake(ByteBuf data) {
 		int packetId = VarNumberSerializer.readVarInt(data);
 		if (packetId == 0x00) {
-			ProtocolVersion version = ProtocolVersion.fromId(VarNumberSerializer.readVarInt(data));
+			int number = VarNumberSerializer.readVarInt(data);
+			ProtocolVersion version = ProtocolVersion.fromProtocolVersionNumber(true, number);
 			return version != ProtocolVersion.UNKNOWN ? version : ProtocolVersion.MINECRAFT_FUTURE;
 		} else {
 			throw new DecoderException(packetId + " is not a valid packet id");
