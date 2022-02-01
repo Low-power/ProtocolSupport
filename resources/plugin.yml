@@ -7,7 +7,7 @@
  "commands":{
   "protocolsupport":{
    "description":"All ProtocolSupport commands",
-   "usage":"Usage: protocolsupport {list|debug|leakdetector}"
+   "usage":"Usage:\n protocolsupport list [-a]\n protocolsupport debug [on|off]\n protocolsupport leakdetector [on|off]"
   }
  }
 }
