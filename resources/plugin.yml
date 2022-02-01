@@ -9,5 +9,37 @@
    "description":"All ProtocolSupport commands",
    "usage":"Usage:\n protocolsupport list [-a]\n protocolsupport debug [on|off]\n protocolsupport leakdetector [on|off]"
   }
+ },
+ "permissions":{
+  "protocolsupport.*":{
+   "description":"Grant all permissions of ProtocolSupport",
+   "default":false,
+   "children":{
+    "protocolsupport.list":true,
+    "protocolsupport.debug":true,
+    "protocolsupport.leakdetector":true
+   }
+  },
+  "protocolsupport.admin":{
+   "default":false,
+   "children":{
+    "protocolsupport.*":true
+   }
+  },
+  "protocolsupport.list":{
+   "description":"May use 'list' subcommand",
+   "default":true
+  },
+  "protocolsupport.debug":{
+   "description":"May use 'debug' subcommand",
+   "default":"op",
+   "children":{
+    "protocolsupport.list":true
+   }
+  },
+  "protocolsupport.leakdetector":{
+   "description":"May use 'leakdetector' subcommand",
+   "default":"op"
+  }
  }
 }

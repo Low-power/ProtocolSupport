@@ -35,12 +35,12 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (!sender.hasPermission("protocolsupport.admin")) {
-			sender.sendMessage(ChatColor.RED + "You have no power here!");
-			return true;
-		}
 		if(args.length < 1) return false;
 		if(args[0].equals("list")) {
+			if(!sender.hasPermission("protocolsupport.list")) {
+				sender.sendMessage(ChatColor.RED.toString() + "Permission denied");
+				return true;
+			}
 			if(args.length > 2) return false;
 			boolean should_list_all = false;
 			if(args.length == 2) {
@@ -61,6 +61,10 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 					ChatColor.GOLD, name, ChatColor.RESET, player_names));
 			}
 		} else if(args[0].equals("debug")) {
+			if(!sender.hasPermission("protocolsupport.debug")) {
+				sender.sendMessage(ChatColor.RED.toString() + "Permission denied");
+				return true;
+			}
 			if(args.length > 2) return false;
 			PlatformUtils utils = ServerPlatform.get().getMiscUtils();
 			if(args.length == 2) {
@@ -79,6 +83,10 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 			sender.sendMessage(ChatColor.GOLD.toString() + 
 				(utils.isDebugging() ? "Enabled" : "Disabled") + " debug");
 		} else if(args[0].equals("leakdetector")) {
+			if(!sender.hasPermission("protocolsupport.leakdetector")) {
+				sender.sendMessage(ChatColor.RED.toString() + "Permission denied");
+				return true;
+			}
 			if(args.length > 2) return false;
 			if(args.length == 2) {
 				if(args[1].equalsIgnoreCase("off")) {
