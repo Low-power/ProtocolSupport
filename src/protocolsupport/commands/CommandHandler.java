@@ -2,7 +2,7 @@ package protocolsupport.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Collection;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -20,6 +20,19 @@ import protocolsupport.zplatform.PlatformUtils;
 
 public class CommandHandler implements CommandExecutor, TabCompleter {
 
+	private static String get_player_names(Collection<Player> players, ProtocolVersion version, String separator, ChatColor color) {
+		StringBuilder sb = new StringBuilder();
+		for (Player player : players) {
+			if (ProtocolSupportAPI.getProtocolVersion(player) == version) {
+				if(sb.length() > 0) sb.append(separator);
+				if(color != null) sb.append(color.toString());
+				sb.append(player.getName());
+				if(color != null) sb.append(ChatColor.RESET.toString());
+			}
+		}
+		return sb.toString();
+	}
+
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
 		if (!sender.hasPermission("protocolsupport.admin")) {
@@ -34,14 +47,18 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 				if(args[1].equals("-a")) should_list_all = true;
 				else return false;
 			}
+			Collection<Player> players = (Collection<Player>)Bukkit.getOnlinePlayers();
+			if(!should_list_all && players.isEmpty()) {
+				sender.sendMessage("No players connected");
+				return true;
+			}
 			for (ProtocolVersion version : ProtocolVersion.values()) {
 				String name = version.getName();
 				if(name == null) continue;
-				String players = getPlayersStringForProtocol(version);
-				if(!should_list_all && players.isEmpty()) continue;
-				sender.sendMessage(String.format("%s[%s]%s %s%s%s",
-					ChatColor.GOLD, name, ChatColor.RESET,
-					ChatColor.GREEN, players, ChatColor.RESET));
+				String player_names = get_player_names(players, version, ", ", ChatColor.GREEN);
+				if(!should_list_all && player_names.isEmpty()) continue;
+				sender.sendMessage(String.format("%s[%s]%s %s",
+					ChatColor.GOLD, name, ChatColor.RESET, player_names));
 			}
 		} else if(args[0].equals("debug")) {
 			if(args.length > 2) return false;
@@ -84,20 +101,6 @@ public class CommandHandler implements CommandExecutor, TabCompleter {
 			return false;
 		}
 		return true;
-	}
-
-	private static String getPlayersStringForProtocol(ProtocolVersion version) {
-		StringBuilder sb = new StringBuilder();
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			if (ProtocolSupportAPI.getProtocolVersion(player) == version) {
-				sb.append(player.getName());
-				sb.append(", ");
-			}
-		}
-		if (sb.length() > 2) {
-			sb.delete(sb.length() - 2, sb.length());
-		}
-		return sb.toString();
 	}
 
 	@Override
