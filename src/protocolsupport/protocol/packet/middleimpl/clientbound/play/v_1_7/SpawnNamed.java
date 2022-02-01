@@ -18,9 +18,9 @@ public class SpawnNamed extends MiddleSpawnNamed {
 	public RecyclableCollection<ClientBoundPacketData> toData(ProtocolVersion version) {
 		ClientBoundPacketData serializer = ClientBoundPacketData.create(ClientBoundPacket.PLAY_SPAWN_NAMED_ID, version);
 		VarNumberSerializer.writeVarInt(serializer, playerEntityId);
-		StringSerializer.writeString(serializer, version, version == ProtocolVersion.MINECRAFT_1_7_10 ? uuid.toString() : uuid.toString().replace("-", ""));
+		StringSerializer.writeString(serializer, version, version == ProtocolVersion.MINECRAFT_1_7_6 ? uuid.toString() : uuid.toString().replace("-", ""));
 		StringSerializer.writeString(serializer, version, name);
-		if (version == ProtocolVersion.MINECRAFT_1_7_10) {
+		if (version == ProtocolVersion.MINECRAFT_1_7_6) {
 			VarNumberSerializer.writeVarInt(serializer, properties.size());
 			for (ProfileProperty property : properties) {
 				StringSerializer.writeString(serializer, version, property.getName());

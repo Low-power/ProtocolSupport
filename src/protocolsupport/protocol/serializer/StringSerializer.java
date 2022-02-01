@@ -44,7 +44,7 @@ public class StringSerializer {
 	}
 
 	private static boolean isUsingUTF8(ProtocolVersion version) {
-		return version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_7_5);
+		return version.isAfterOrEq(ProtocolVersion.MINECRAFT_1_7_2);
 	}
 
 }

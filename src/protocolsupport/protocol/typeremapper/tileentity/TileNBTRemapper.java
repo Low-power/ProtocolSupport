@@ -85,7 +85,7 @@ public class TileNBTRemapper {
 					return input;
 				}
 			},
-			ProtocolVersion.getAllBetween(ProtocolVersion.MINECRAFT_1_9, ProtocolVersion.MINECRAFT_1_10)
+			ProtocolVersion.getAllBetween(ProtocolVersion.MINECRAFT_1_9_0, ProtocolVersion.MINECRAFT_1_10)
 		);
 		register(
 			TileEntityUpdateType.MOB_SPAWNER,
@@ -126,7 +126,7 @@ public class TileNBTRemapper {
 					return input;
 				}
 			},
-			ProtocolVersion.getAllBefore(ProtocolVersion.MINECRAFT_1_7_5)
+			ProtocolVersion.getAllBefore(ProtocolVersion.MINECRAFT_1_7_2)
 		);
 		register(
 			TileEntityUpdateType.FLOWER_POT,

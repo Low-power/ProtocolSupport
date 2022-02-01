@@ -14,10 +14,10 @@ public class InventorySetItems extends MiddleInventorySetItems {
 
 	@Override
 	public RecyclableCollection<ClientBoundPacketData> toData(ProtocolVersion version) {
-		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9) && ((cache.getOpenedWindow() == WindowType.PLAYER) || (windowId == 0))) {
+		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9_0) && ((cache.getOpenedWindow() == WindowType.PLAYER) || (windowId == 0))) {
 			itemstacks.remove(itemstacks.size() - 1);
 		}
-		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9) && (cache.getOpenedWindow() == WindowType.BREING)) {
+		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9_0) && (cache.getOpenedWindow() == WindowType.BREING)) {
 			itemstacks.remove(4);
 		} else if (version.isBefore(ProtocolVersion.MINECRAFT_1_8) && (cache.getOpenedWindow() == WindowType.ENCHANT)) {
 			itemstacks.remove(1);

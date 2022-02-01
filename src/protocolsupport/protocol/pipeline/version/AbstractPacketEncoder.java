@@ -31,7 +31,7 @@ public abstract class AbstractPacketEncoder extends MessageToMessageEncoder<Byte
 				packet.setSharedStorage(AbstractPacketEncoder.this.cache);
 			}
 		});
-		varintPacketId = connection.getVersion().isAfterOrEq(ProtocolVersion.MINECRAFT_1_7_5);
+		varintPacketId = connection.getVersion().isAfterOrEq(ProtocolVersion.MINECRAFT_1_7_2);
 	}
 
 	protected final MiddleTransformerRegistry<ClientBoundMiddlePacket> registry = new MiddleTransformerRegistry<>();

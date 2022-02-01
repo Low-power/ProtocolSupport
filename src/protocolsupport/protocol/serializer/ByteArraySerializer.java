@@ -41,7 +41,7 @@ public class ByteArraySerializer {
 	}
 
 	private static boolean isUsingShortLength(ProtocolVersion version) {
-		return version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10);
+		return version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_6);
 	}
 
 	private static boolean isUsingVarIntLength(ProtocolVersion version) {

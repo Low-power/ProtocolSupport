@@ -65,7 +65,7 @@ public class PlayerListener implements Listener {
 		Connection connection = ProtocolSupportAPI.getConnection(event.getPlayer());
 		if (
 			(connection != null) &&
-			connection.getVersion().isBefore(ProtocolVersion.MINECRAFT_1_9)
+			connection.getVersion().isBefore(ProtocolVersion.MINECRAFT_1_9_0)
 		) {
 			Block block = event.getBlock();
 			connection.sendPacket(ServerPlatform.get().getPacketFactory().createBlockBreakSoundPacket(new Position(block.getX(), block.getY(), block.getZ()), block.getType()));
@@ -78,7 +78,7 @@ public class PlayerListener implements Listener {
 		Connection connection = ProtocolSupportAPI.getConnection(player);
 		if (
 			(connection != null) &&
-			connection.getVersion().isBefore(ProtocolVersion.MINECRAFT_1_9)
+			connection.getVersion().isBefore(ProtocolVersion.MINECRAFT_1_9_0)
 		) {
 			player.playSound(
 				event.getItem().getLocation(), Sound.ENTITY_ITEM_PICKUP,

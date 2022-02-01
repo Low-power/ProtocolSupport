@@ -14,10 +14,10 @@ public class InventorySetSlot extends MiddleInventorySetSlot {
 
 	@Override
 	public RecyclableCollection<ClientBoundPacketData> toData(ProtocolVersion version) {
-		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9) && ((cache.getOpenedWindow() == WindowType.PLAYER) || (windowId == 0)) && (slot == 45)) {
+		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9_0) && ((cache.getOpenedWindow() == WindowType.PLAYER) || (windowId == 0)) && (slot == 45)) {
 			return RecyclableEmptyList.get();
 		}
-		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9) && (cache.getOpenedWindow() == WindowType.BREING)) {
+		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9_0) && (cache.getOpenedWindow() == WindowType.BREING)) {
 			if (slot == 4) {
 				return RecyclableEmptyList.get();
 			}

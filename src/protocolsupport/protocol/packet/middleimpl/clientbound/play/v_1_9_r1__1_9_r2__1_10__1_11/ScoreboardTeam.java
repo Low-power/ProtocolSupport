@@ -29,7 +29,7 @@ public class ScoreboardTeam extends MiddleScoreboardTeam {
 		if ((mode == 0) || (mode == 3) || (mode == 4)) {
 			VarNumberSerializer.writeVarInt(serializer, players.length);
 			for (String player : players) {
-				StringSerializer.writeString(serializer, version, version.isBefore(ProtocolVersion.MINECRAFT_1_9) ? Utils.clampString(player, 16) : player);
+				StringSerializer.writeString(serializer, version, version.isBefore(ProtocolVersion.MINECRAFT_1_9_0) ? Utils.clampString(player, 16) : player);
 			}
 		}
 		return RecyclableSingletonList.<ClientBoundPacketData>create(serializer);

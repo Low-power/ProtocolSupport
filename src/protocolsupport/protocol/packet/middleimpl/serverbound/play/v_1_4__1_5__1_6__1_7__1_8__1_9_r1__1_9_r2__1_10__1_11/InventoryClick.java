@@ -12,7 +12,7 @@ public class InventoryClick extends MiddleInventoryClick {
 	public void readFromClientData(ByteBuf clientdata, ProtocolVersion version) {
 		windowId = clientdata.readUnsignedByte();
 		slot = clientdata.readShort();
-		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9) && (cache.getOpenedWindow() == WindowType.BREING)) {
+		if (version.isBefore(ProtocolVersion.MINECRAFT_1_9_0) && (cache.getOpenedWindow() == WindowType.BREING)) {
 			if (slot > 3) {
 				slot++;
 			}

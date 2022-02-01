@@ -13,8 +13,8 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 public enum ProtocolVersion {
 	UNKNOWN(-1),
 	MINECRAFT_LEGACY(-1),
-	MINECRAFT_1_4_7(false, 51, "1.4.7"),
-	MINECRAFT_1_5_1(false, 60, "1.5.1"),
+	MINECRAFT_1_4_6(false, 51, "1.4.7"),
+	MINECRAFT_1_5_0(false, 60, "1.5.1"),
 	MINECRAFT_2_0_BLUE(false, 90, "2.0 blue"),
 	MINECRAFT_2_0_RED(false, 91, "2.0 red"),
 	MINECRAFT_2_0_PURPLE(false, 92, "2.0 purple"),
@@ -22,10 +22,10 @@ public enum ProtocolVersion {
 	MINECRAFT_1_6_1(false, 73, "1.6.1"),
 	MINECRAFT_1_6_2(false, 74, "1.6.2"),
 	MINECRAFT_1_6_4(false, 78, "1.6.4"),
-	MINECRAFT_1_7_5(true, 4, "1.7.5"),
-	MINECRAFT_1_7_10(true, 5, "1.7.10"),
+	MINECRAFT_1_7_2(true, 4, "1.7.5"),
+	MINECRAFT_1_7_6(true, 5, "1.7.10"),
 	MINECRAFT_1_8(true, 47, "1.8"),
-	MINECRAFT_1_9(true, 107, "1.9"),
+	MINECRAFT_1_9_0(true, 107, "1.9"),
 	MINECRAFT_1_9_1(true, 108, "1.9.1"),
 	MINECRAFT_1_9_2(true, 109, "1.9.2"),
 	MINECRAFT_1_9_4(true, 110, "1.9.4"),
@@ -33,6 +33,12 @@ public enum ProtocolVersion {
 	MINECRAFT_1_11(true, 315, "1.11"),
 	MINECRAFT_1_11_1(true, 316, "1.11.2"),
 	MINECRAFT_FUTURE(-1);
+
+	public static final ProtocolVersion MINECRAFT_1_4_7 = MINECRAFT_1_4_6;
+	public static final ProtocolVersion MINECRAFT_1_5_1 = MINECRAFT_1_5_0;
+	public static final ProtocolVersion MINECRAFT_1_7_5 = MINECRAFT_1_7_2;
+	public static final ProtocolVersion MINECRAFT_1_7_10 = MINECRAFT_1_7_6;
+	public static final ProtocolVersion MINECRAFT_1_9 = MINECRAFT_1_9_0;
 
 	private boolean is_modern_protocol;
 	private final int id;
@@ -236,7 +242,7 @@ public enum ProtocolVersion {
 	 * @throws IllegalArgumentException if protocol type has not supported protocol versions
 	 */
 	public static ProtocolVersion getOldest() {
-		return MINECRAFT_1_4_7;
+		return MINECRAFT_1_4_6;
 	}
 
 	/**

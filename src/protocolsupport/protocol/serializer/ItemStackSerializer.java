@@ -112,7 +112,7 @@ public class ItemStackSerializer {
 	}
 
 	private static final boolean isUsingShortLengthNBT(ProtocolVersion version) {
-		return version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_10);
+		return version.isBeforeOrEq(ProtocolVersion.MINECRAFT_1_7_6);
 	}
 
 	private static final boolean isUsingDirectOrZeroIfNoneNBT(ProtocolVersion version) {

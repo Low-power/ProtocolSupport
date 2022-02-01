@@ -12,7 +12,7 @@ public class LoginSuccess extends MiddleLoginSuccess {
 
 	@Override
 	public RecyclableCollection<ClientBoundPacketData> toData(ProtocolVersion version) {
-		if (version == ProtocolVersion.MINECRAFT_1_7_5) {
+		if (version == ProtocolVersion.MINECRAFT_1_7_2) {
 			uuidstring = uuidstring.replace("-", "");
 		}
 		ClientBoundPacketData serializer = ClientBoundPacketData.create(ClientBoundPacket.LOGIN_SUCCESS_ID, version);

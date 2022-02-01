@@ -43,11 +43,11 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 		IPipeLineBuilder builder19r1 = new protocolsupport.protocol.pipeline.version.v_1_9.r1.PipeLineBuilder();
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_9_2, builder19r1);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_9_1, builder19r1);
-		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_9, builder19r1);
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_9_0, builder19r1);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_8, new protocolsupport.protocol.pipeline.version.v_1_8.PipeLineBuilder());
 		IPipeLineBuilder builder17 = new protocolsupport.protocol.pipeline.version.v_1_7.PipeLineBuilder();
-		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_7_10, builder17);
-		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_7_5, builder17);
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_7_6, builder17);
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_7_2, builder17);
 		IPipeLineBuilder builder16 = new protocolsupport.protocol.pipeline.version.v_1_6.PipeLineBuilder();
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_6_4, builder16);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_6_2, builder16);
@@ -57,8 +57,8 @@ public class InitialPacketDecoder extends SimpleChannelInboundHandler<ByteBuf> {
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_2_0_RED, builder15);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_2_0_BLUE, builder15);
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_5_2, builder15);
-		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_5_1, builder15);
-		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_4_7, new protocolsupport.protocol.pipeline.version.v_1_4.PipeLineBuilder());
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_5_0, builder15);
+		pipelineBuilders.put(ProtocolVersion.MINECRAFT_1_4_6, new protocolsupport.protocol.pipeline.version.v_1_4.PipeLineBuilder());
 		pipelineBuilders.put(ProtocolVersion.MINECRAFT_LEGACY, new protocolsupport.protocol.pipeline.version.v_legacy.PipeLineBuilder());
 	}
 
