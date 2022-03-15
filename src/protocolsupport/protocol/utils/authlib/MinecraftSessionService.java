@@ -17,12 +17,15 @@ import protocolsupport.utils.JsonUtils;
 
 public class MinecraftSessionService {
 
-	private static final String hasJoinedUrl = "https://sessionserver.mojang.com/session/minecraft/hasJoined";
+	private static final String BASE_URL = "https://sessionserver.mojang.com/session/minecraft/hasJoined";
 
-	public static GameProfile hasJoinedServer(String name, String hash) throws AuthenticationUnavailableException, MalformedURLException {
-		final URL url = new URL(hasJoinedUrl + "?username=" + name + "&serverId=" + hash);
+	public static GameProfile hasJoinedServer(String name, String hash) throws AuthenticationUnavailableException {
 		try {
-			JsonObject root = new JsonParser().parse(new InputStreamReader(url.openStream())).getAsJsonObject();
+			final URL url = new URL(BASE_URL + "?username=" + name + "&serverId=" + hash);
+			JsonParser parser = new JsonParser();
+			JsonElement element = parser.parse(new InputStreamReader(url.openStream()));
+			if(!element.isJsonObject()) return null;
+			JsonObject root = element.getAsJsonObject();
 			String rname = JsonUtils.getString(root, "name");
 			UUID ruuid = UUIDTypeAdapter.fromString(JsonUtils.getString(root, "id"));
 			GameProfile profile = new GameProfile(ruuid, rname);
@@ -36,8 +39,11 @@ public class MinecraftSessionService {
 				));
 			}
 			return profile;
+		} catch(MalformedURLException e) {
+			e.printStackTrace();
+			return null;
 		} catch (IOException | IllegalStateException | JsonParseException e) {
-			throw new AuthenticationUnavailableException("Failed to make request to " + hasJoinedUrl, e);
+			throw new AuthenticationUnavailableException("Failed to make request to " + BASE_URL, e);
 		}
 	}
 
