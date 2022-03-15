@@ -37,12 +37,16 @@ public class MinecraftSessionService {
 			}
 			return profile;
 		} catch (IOException | IllegalStateException | JsonParseException e) {
-			throw new AuthenticationUnavailableException();
+			throw new AuthenticationUnavailableException("Failed to make request to " + hasJoinedUrl, e);
 		}
 	}
 
 	public static class AuthenticationUnavailableException extends Exception {
 		private static final long serialVersionUID = 1L;
+
+		public AuthenticationUnavailableException(String message, Throwable cause) {
+			super(message, cause);
+		}
 	}
 
 }
