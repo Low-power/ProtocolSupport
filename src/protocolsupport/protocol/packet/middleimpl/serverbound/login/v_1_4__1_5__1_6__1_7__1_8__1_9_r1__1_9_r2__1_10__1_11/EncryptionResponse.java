@@ -9,8 +9,8 @@ public class EncryptionResponse extends MiddleEncryptionResponse {
 
 	@Override
 	public void readFromClientData(ByteBuf clientdata, ProtocolVersion version) {
-		sharedSecret = ByteArraySerializer.readByteArray(clientdata, version, 256);
-		verifyToken = ByteArraySerializer.readByteArray(clientdata, version, 256);
+		sharedSecret = ByteArraySerializer.readByteArray(clientdata, version);
+		verifyToken = ByteArraySerializer.readByteArray(clientdata, version);
 	}
 
 }
